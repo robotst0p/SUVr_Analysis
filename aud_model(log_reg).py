@@ -28,9 +28,6 @@ X_train, X_test, y_train, y_test = train_test_split(X,y,test_size = 0.5, random_
 
 from sklearn.linear_model import LogisticRegression
 
-print("TEST DATA")
-print(y)
-
 log_reg = LogisticRegression()
 log_reg.fit(X,y)
 
