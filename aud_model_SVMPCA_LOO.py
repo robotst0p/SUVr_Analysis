@@ -44,6 +44,8 @@ for i in range(1, 27):
     
     y_pred_list = []
     y_test_list = []
+    
+    print("PCA Component Num:\n", i)
 
     for train_index, test_index in loo.split(X):
         X_train, X_test = X[train_index], X[test_index]
@@ -59,9 +61,7 @@ for i in range(1, 27):
 
         y_pred = clf.predict(test_model)
         y_pred_list.append(y_pred)
-    
-    print("PCA Component Num:\n", i)
-
+   
     print("Accuracy:", metrics.accuracy_score(y_test_list, y_pred_list))
     print("Precision:", metrics.precision_score(y_test_list, y_pred_list, zero_division = 1))
     print("Recall:", metrics.recall_score(y_test_list, y_pred_list, zero_division = 1))
