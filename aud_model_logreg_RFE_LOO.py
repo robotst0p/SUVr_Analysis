@@ -2,7 +2,6 @@ import importlib
 import pandas as pd
 import numpy as np 
 import matplotlib.pyplot as plt
-import scikitplot as skplt
 
 #normalization 
 from sklearn.preprocessing import StandardScaler
@@ -13,7 +12,7 @@ from sklearn.model_selection import train_test_split
 #import LEAVEONEOUT for cross validation
 from sklearn.model_selection import LeaveOneOut
 
-from sklearn.decomposition import PCA
+from sklearn.feature_selection import RFE
 from sklearn.linear_model import LogisticRegression
 
 from sklearn import metrics
@@ -41,15 +40,16 @@ y = y.astype(int)
 loo = LeaveOneOut()
 loo.get_n_splits(X)
 
-#use PCA for feature reduction and PCA transform test sets in the loop
-pca = PCA(n_components = 13)
-stored_model = pca.fit(X)
-
 y_pred_list = []
 y_test_list = []
 
 for train_index, test_index in loo.split(X):
     model = LogisticRegression(solver = 'liblinear')
+
+    rfe_features = 2
+    rfe = RFE(estimator = model, n_features_to_select = rfe_features)
+
+    rfe.fit(X,y)
 
     X_train, X_test = X[train_index], X[test_index]
     y_train, y_test = y[train_index], y[test_index]
@@ -58,18 +58,14 @@ for train_index, test_index in loo.split(X):
     X_train_normal = train_normal.transform(X_train)
     X_test_normal = train_normal.transform(X_test)
 
-    stored_model = pca.fit(X_train_normal)
-    train_model = stored_model.transform(X_train_normal)
-    test_model = stored_model.transform(X_test_normal)
+    train_model = rfe.transform(X_train_normal)
+    test_model = rfe.transform(X_test_normal)
 
     #fit the model on the training data
     model.fit(train_model, y_train)
 
     #predict the response for the test set
     y_pred = model.predict(test_model)
-
-    #fit the model on the training data
-    model.fit(train_model, y_train)
     
     #training predictions
     training_prediction = model.predict(train_model)
@@ -79,11 +75,6 @@ for train_index, test_index in loo.split(X):
 
     y_test_list.append(y_test[0])
     y_pred_list.append(test_prediction[0])
-
-
-#plot decomposition model to see how many pc's are needed to capture variance
-skplt.decomposition.plot_pca_component_variance(pca)
-plt.show()
 
 #performance measures of the model in testing
 print("Precision, Recall, Confusion Matrix, in testing\n")
