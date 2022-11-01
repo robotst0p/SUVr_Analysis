@@ -8,14 +8,17 @@ from sklearn.preprocessing import StandardScaler
 
 #model/model_training imports
 from sklearn.model_selection import train_test_split
-
-#import LEAVEONEOUT for cross validation
-from sklearn.model_selection import LeaveOneOut
-
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import LogisticRegression
 
+#import LeaveOneOut for cross validation
+from sklearn.model_selection import LeaveOneOut
+
+#metrics importing (accuracy, precision, recall)
 from sklearn import metrics
+
+#helping functions 
+from helper_functions import retrieve_feature_names
 
 #load in suvr data as pandas dataframe
 raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx', index_col = 0)
@@ -75,6 +78,11 @@ for train_index, test_index in loo.split(X):
 
     y_test_list.append(y_test[0])
     y_pred_list.append(test_prediction[0])
+
+#grab and display selected feature names
+feature_list = retrieve_feature_names(rfe.support_, X_df)
+
+print("rfe feature list: ", feature_list)
 
 #performance measures of the model in testing
 print("Precision, Recall, Confusion Matrix, in testing\n")

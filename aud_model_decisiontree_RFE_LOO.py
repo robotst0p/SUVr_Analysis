@@ -17,6 +17,9 @@ from sklearn.model_selection import LeaveOneOut
 #metrics importing (accuracy, precision, sensitivity, recall)
 from sklearn import metrics
 
+#helping functions 
+from helper_functions import retrieve_feature_names
+
 #load in suvr data as pandas dataframe
 raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx', index_col = 0)
 
@@ -26,15 +29,19 @@ raw_dataframe.loc[raw_dataframe["CLASS"] == "CONTROL", "CLASS"] = 0
 
 processed_data = raw_dataframe
 
-X = processed_data.drop(['CLASS'], axis = 1)
+X_df = processed_data.drop(['CLASS'], axis = 1)
 
 #convert to numpy array for training 
-X = X.to_numpy()
+X = X_df.to_numpy()
 y = raw_dataframe['CLASS']
 y = y.astype(int)
 
 #z-score normalization
 scaler = StandardScaler()
+
+#raw_data normalization of feature vector
+X_model = scaler.fit(X)
+X_normal = X_model.transform(X)
 
 #leaveoneout cross validation and decisiontree model creation 
 loo = LeaveOneOut()
@@ -58,6 +65,8 @@ for train_index, test_index in loo.split(X):
     X_train_normal = train_normal.transform(X_train)
     X_test_normal = train_normal.transform(X_test)
 
+    #rfe.fit(X_normal, y)
+
     train_model = rfe.transform(X_train_normal)
     test_model = rfe.transform(X_test_normal)
 
@@ -69,6 +78,10 @@ for train_index, test_index in loo.split(X):
     #predict the response for the test set
     y_pred = mod_dt.predict(test_model)
     y_pred_list.append(y_pred)
+
+feature_list = retrieve_feature_names(rfe.support_, X_df)
+
+print("rfe feature list: ", feature_list)
 
 print("Accuracy:", metrics.accuracy_score(y_test_list, y_pred_list))
 print("Precision:", metrics.precision_score(y_test_list, y_pred_list, zero_division = 1))

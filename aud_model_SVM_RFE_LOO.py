@@ -17,6 +17,9 @@ from sklearn import svm
 #metrics importing (accuracy, percision, sensitivity, recall)
 from sklearn import metrics
 
+#helping functions 
+from helper_functions import retrieve_feature_names
+
 #load in suvr data as pandas dataframe
 raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx', index_col = 0)
 
@@ -42,8 +45,6 @@ loo.get_n_splits(X)
 
 y_pred_list = []
 y_test_list = []
-
-
 
 for train_index, test_index in loo.split(X):
     clf = svm.SVC(kernel = 'linear')
@@ -72,6 +73,10 @@ for train_index, test_index in loo.split(X):
     #predict the response for the test set 
     y_pred = clf.predict(test_model)
     y_pred_list.append(y_pred)
+
+feature_list = retrieve_feature_names(rfe.support_, X_df)
+
+print("rfe feature list: ", feature_list)
 
 print("Accuracy:", metrics.accuracy_score(y_test_list, y_pred_list))
 print("Precision:", metrics.precision_score(y_test_list, y_pred_list, zero_division = 1))
