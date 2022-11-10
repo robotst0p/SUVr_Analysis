@@ -18,7 +18,7 @@ from sklearn.model_selection import LeaveOneOut
 from sklearn import metrics
 
 #helping functions 
-from helper_functions import retrieve_feature_names
+from helper_functions import retrieve_feature_names, feature_vote
 
 #load in suvr data as pandas dataframe
 raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx', index_col = 0)
@@ -52,8 +52,33 @@ y_pred_list = []
 y_test_list = []
 
 feature_voting_list = []
-rfe_feature_num = [0:100]
+final_feature_list = []
 
+for train_index, test_index in loo.split(X):
+    mod_dt = DecisionTreeClassifier(max_depth = 5, random_state = 1)
+    
+    rfe_features = 4
+    rfe = RFE(estimator = mod_dt, n_features_to_select = rfe_features)
+    
+    X_train, X_test = X.iloc[train_index], X.iloc[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+    
+    train_normal = scaler.fit(X_train)
+    X_train_normal = pd.DataFrame(train_normal.transform(X_train), columns = X_train.columns)
+    X_test_normal = pd.DataFrame(train_normal.transform(X_test), columns = X_test.columns)
+    
+    rfe.fit(X_train_normal, y_train)
+    
+    train_model = pd.DataFrame(rfe.transform(X_train_normal), columns = X_train_normal.columns[rfe.support_])
+    test_model = pd.DataFrame(rfe.transform(X_test_normal), columns = X_test_normal.columns[rfe.support_])
+    
+    for col in train_model.columns:
+        feature_voting_list.append(col)
+
+#input voting selection threshold as percentage value (percentage of times feature needs to be selected by rfe)
+threshold = .4        
+final_feature_list = feature_vote(feature_voting_list, rfe_features, threshold)
+    
 for train_index, test_index in loo.split(X):
     mod_dt = DecisionTreeClassifier(max_depth = 5, random_state = 1)
 
@@ -65,25 +90,28 @@ for train_index, test_index in loo.split(X):
     X_train, X_test = X.iloc[train_index], X.iloc[test_index]
     y_train, y_test = y[train_index], y[test_index]
 
+    #normalization of training and testing X
     train_normal = scaler.fit(X_train)
     X_train_normal = pd.DataFrame(train_normal.transform(X_train), columns = X_train.columns)
     X_test_normal = pd.DataFrame(train_normal.transform(X_test), columns = X_test.columns)
-
-    rfe.fit(X_train_normal, y_train)
-
-    train_model = pd.DataFrame(rfe.transform(X_train_normal), columns = X_train_normal.columns[rfe.support_])
-    test_model = pd.DataFrame(rfe.transform(X_test_normal), columns = X_test_normal.columns[rfe.support_])
     
-    for col in train_model.columns:
-        feature_voting_list.append(col)
+    #use voted on features to transform training and testing X
+    X_train_normal = X_train_normal.loc[:, final_feature_list]
+    X_test_normal = X_test_normal.loc[:, final_feature_list]
+    
+    #fitting of recursive feature eliminator to normalized X and y training sets
+    #rfe.fit(X_train_normal, y_train)
+
+    #train_model = pd.DataFrame(rfe.transform(X_train_normal), columns = X_train_normal.columns[rfe.support_])
+    #test_model = pd.DataFrame(rfe.transform(X_test_normal), columns = X_test_normal.columns[rfe.support_])
 
     y_test_list.append(y_test[0])
     
     #fit the model on the training data 
-    mod_dt.fit(train_model, y_train)
+    mod_dt.fit(X_train_normal, y_train)
     
     #predict the response for the test set
-    y_pred = mod_dt.predict(test_model)
+    y_pred = mod_dt.predict(X_test_normal)
     y_pred_list.append(y_pred)
 
 #grab and display selected feature names
