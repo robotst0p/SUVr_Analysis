@@ -119,6 +119,13 @@ for train_index, test_index in loo.split(X):
 
 #print("rfe feature list: ", feature_list)
 
+import seaborn as sn
+corr_matrix = X_train_normal.corr()
+sn.heatmap(corr_matrix, annot=True)
+plt.show()
+
+
+
 print("Accuracy:", metrics.accuracy_score(y_test_list, y_pred_list))
 print("Precision:", metrics.precision_score(y_test_list, y_pred_list))
 print("Recall:", metrics.recall_score(y_test_list, y_pred_list))
