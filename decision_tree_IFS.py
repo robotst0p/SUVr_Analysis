@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np 
 import matplotlib.pyplot as plt
+import seaborn as sn
 
 #normalization
 from sklearn.preprocessing import StandardScaler
@@ -77,7 +78,7 @@ for train_index, test_index in loo.split(X):
 
 #input voting selection threshold as percentage value (percentage of times feature needs to be selected by rfe)
 threshold = .4        
-final_feature_list = feature_vote(feature_voting_list, rfe_features, threshold)
+final_feature_list, voting_dict = feature_vote(feature_voting_list, rfe_features, threshold, X_df)
     
 for train_index, test_index in loo.split(X):
     mod_dt = DecisionTreeClassifier(max_depth = 5, random_state = 1)
@@ -119,10 +120,11 @@ for train_index, test_index in loo.split(X):
 
 #print("rfe feature list: ", feature_list)
 
-import seaborn as sn
 corr_matrix = X_train_normal.corr()
 sn.heatmap(corr_matrix, annot=True)
 plt.show()
+
+plt.bar(voting_dict.keys(), voting_dict.values(), color ='blue',width = .5)
 
 
 

@@ -1,5 +1,3 @@
-import math
-
 def retrieve_feature_names(rfe_bool, data):
     feat_index = []
     feature_list = []
@@ -14,7 +12,7 @@ def retrieve_feature_names(rfe_bool, data):
 
     return feature_list
 
-def feature_vote(feature_list, rfe_features, threshold):
+def feature_vote(feature_list, rfe_features, threshold, data):
     #threshold is percentage value
     voting_thresh = round(27*threshold)
     
@@ -32,5 +30,10 @@ def feature_vote(feature_list, rfe_features, threshold):
         if (vote >= voting_thresh):
             final_features.append(feature)
             
-    return (final_features)
+    data = data.drop(final_features, axis=1)
+    
+    for feature in data.columns:
+        voting_dict[feature] = 0
+            
+    return (final_features, voting_dict)
     
