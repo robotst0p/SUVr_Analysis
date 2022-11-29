@@ -46,7 +46,7 @@ scaler = StandardScaler()
 
 #raw_data normalization of feature vector
 X_model = scaler.fit(X)
-X_normal = X_model.transform(X)
+X_normal = pd.DataFrame(X_model.transform(X), columns = X_df.columns)
 
 #leaveoneout cross validation and decisiontree model creation 
 loo = LeaveOneOut()
@@ -84,67 +84,21 @@ threshold = .4
 final_feature_list, voting_dict = feature_vote(feature_voting_list, rfe_features, threshold, X_df)
 
 #optuna parameter tuning
-mod_dt = DecisionTreeClassifier(max_depth = 5, random_state = 1)
+mod_dt = DecisionTreeClassifier()
 cv = LeaveOneOut()
-search_spaces = {"max_depth": optuna.distributions.IntDistribution(0, 100, False, 1), "random_state": optuna.distributions.IntDistribution(0, 100, False, 1)}
+search_spaces = {"max_depth": optuna.distributions.IntDistribution(0, 100, False, 1)}
 
 optuna_search = optuna.integration.OptunaSearchCV(estimator = mod_dt, param_distributions = search_spaces, n_trials = 10, cv = cv, error_score = 0.0, refit = True)
 
-for train_index, test_index in loo.split(X):
-    #mod_dt = DecisionTreeClassifier(max_depth = 5, random_state = 1)
-    
-    #optuna_search = optuna.integration.OptunaSearchCV(estimator = mod_dt, param_distributions = search_spaces, n_trials = 10, cv = cv, error_score = 0.0, refit = True)
+#X_test_normal = X_test_normal.loc[:, final_feature_list]
+X_normal_selection = X_normal.loc[:, final_feature_list]
 
-    rfe_features = 4
-    rfe = RFE(estimator = mod_dt, n_features_to_select = rfe_features)
+optuna_search.fit(X_normal_selection, y)
 
-    #rfe.fit(X,y)
-
-    X_train, X_test = X.iloc[train_index], X.iloc[test_index]
-    y_train, y_test = y[train_index], y[test_index]
-
-    #normalization of training and testing X
-    train_normal = scaler.fit(X_train)
-    X_train_normal = pd.DataFrame(train_normal.transform(X_train), columns = X_train.columns)
-    X_test_normal = pd.DataFrame(train_normal.transform(X_test), columns = X_test.columns)
-    
-    #use voted on features to transform training and testing X
-    X_train_normal = X_train_normal.loc[:, final_feature_list]
-    X_test_normal = X_test_normal.loc[:, final_feature_list]
-    
-    #fitting of recursive feature eliminator to normalized X and y training sets
-    #rfe.fit(X_train_normal, y_train)
-
-    #train_model = pd.DataFrame(rfe.transform(X_train_normal), columns = X_train_normal.columns[rfe.support_])
-    #test_model = pd.DataFrame(rfe.transform(X_test_normal), columns = X_test_normal.columns[rfe.support_])
-
-    y_test_list.append(y_test[0])
-    
-    #fit the model on the training data 
-    optuna_search.fit(X_train_normal, y_train)
-    #mod_dt.fit(X_train_normal, y_train)
-    
-    #predict the response for the test set
-    y_pred = optuna_search.predict(X_test_normal)
-    #y_pred = mod_dt.predict(X_test_normal)
-    y_pred_list.append(y_pred)
-
-#grab and display selected feature names
-#feature_list = retrieve_feature_names(rfe.support_, X_df)
-
-#print("rfe feature list: ", feature_list)
-
-corr_matrix = X_train_normal.corr()
-sn.heatmap(corr_matrix, annot=True)
-plt.show()
+y_pred = optuna_search.predict(X_normal_selection)
 
 plt.bar(voting_dict.keys(), voting_dict.values(), color ='blue',width = .5)
-
-
-
-print("Accuracy:", metrics.accuracy_score(y_test_list, y_pred_list))
-print("Precision:", metrics.precision_score(y_test_list, y_pred_list))
-print("Recall:", metrics.recall_score(y_test_list, y_pred_list))
+plt.show()
 
 
 
