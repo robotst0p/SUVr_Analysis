@@ -46,6 +46,8 @@ scaler = StandardScaler()
 
 #raw_data normalization of feature vector
 X_model = scaler.fit(X)
+#X_train_normal = pd.DataFrame(train_normal.transform(X_train), columns = X_train.columns)
+X_normal_df = pd.DataFrame(X_model.transform(X), columns = X_df.columns)
 X_normal = X_model.transform(X)
 
 #leaveoneout cross validation and decisiontree model creation 
