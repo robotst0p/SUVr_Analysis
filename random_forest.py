@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler
 
 #model/training importing 
 from sklearn.model_selection import train_test_split
-from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import RFE
 
 #import LeaveOneOut for cross validation 
@@ -59,9 +59,10 @@ feature_voting_list = []
 final_feature_list = []
 
 for train_index, test_index in loo.split(X):
-    svc = svm.SVC(kernel = "linear", random_state = 42)    
+    mod_rf = RandomForestClassifier(max_depth = 5)
+    
     rfe_features = 4
-    rfe = RFE(estimator = svc, n_features_to_select = rfe_features)
+    rfe = RFE(estimator = mod_rf, n_features_to_select = rfe_features)
     
     X_train, X_test = X.iloc[train_index], X.iloc[test_index]
     y_train, y_test = y[train_index], y[test_index]
@@ -83,11 +84,11 @@ threshold = .4
 final_feature_list, voting_dict = feature_vote(feature_voting_list, rfe_features, threshold, X_df)
 
 #optuna parameter tuning
-svc = svm.SVC()
+mod_rf = RandomForestClassifier()
 cv = LeaveOneOut()
-search_spaces = {"C":optuna.distributions.FloatDistribution(1e-10, 1e10, log = True), "kernel":optuna.distributions.CategoricalDistribution({"linear","poly","rbf","sigmoid"})}
+search_spaces = {"max_depth": optuna.distributions.IntDistribution(0, 100, False, 1)}
 
-optuna_search = optuna.integration.OptunaSearchCV(estimator = svc, param_distributions = search_spaces, n_trials = 10, cv = cv, error_score = 0.0, refit = True)
+optuna_search = optuna.integration.OptunaSearchCV(estimator = mod_rf, param_distributions = search_spaces, n_trials = 10, cv = cv, error_score = 0.0, refit = True)
 
 #X_test_normal = X_test_normal.loc[:, final_feature_list]
 X_normal_selection = X_normal.loc[:, final_feature_list]
@@ -98,4 +99,3 @@ y_pred = optuna_search.predict(X_normal_selection)
 
 plt.bar(voting_dict.keys(), voting_dict.values(), color ='blue',width = .5)
 plt.show()
-
