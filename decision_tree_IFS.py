@@ -21,6 +21,9 @@ from sklearn import metrics
 #helping functions 
 from helper_functions import retrieve_feature_names, feature_vote
 
+#parameter tuning 
+import optuna
+
 #load in suvr data as pandas dataframe
 raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx', index_col = 0)
 
@@ -43,6 +46,8 @@ scaler = StandardScaler()
 
 #raw_data normalization of feature vector
 X_model = scaler.fit(X)
+#X_train_normal = pd.DataFrame(train_normal.transform(X_train), columns = X_train.columns)
+X_normal_df = pd.DataFrame(X_model.transform(X), columns = X_df.columns)
 X_normal = X_model.transform(X)
 
 #leaveoneout cross validation and decisiontree model creation 
@@ -79,9 +84,18 @@ for train_index, test_index in loo.split(X):
 #input voting selection threshold as percentage value (percentage of times feature needs to be selected by rfe)
 threshold = .4        
 final_feature_list, voting_dict = feature_vote(feature_voting_list, rfe_features, threshold, X_df)
-    
+
+#optuna parameter tuning
+mod_dt = DecisionTreeClassifier(max_depth = 5, random_state = 1)
+cv = LeaveOneOut()
+search_spaces = {"max_depth": optuna.distributions.IntDistribution(0, 100, False, 1), "random_state": optuna.distributions.IntDistribution(0, 100, False, 1)}
+
+optuna_search = optuna.integration.OptunaSearchCV(estimator = mod_dt, param_distributions = search_spaces, n_trials = 10, cv = cv, error_score = 0.0, refit = True)
+
 for train_index, test_index in loo.split(X):
-    mod_dt = DecisionTreeClassifier(max_depth = 5, random_state = 1)
+    #mod_dt = DecisionTreeClassifier(max_depth = 5, random_state = 1)
+    
+    #optuna_search = optuna.integration.OptunaSearchCV(estimator = mod_dt, param_distributions = search_spaces, n_trials = 10, cv = cv, error_score = 0.0, refit = True)
 
     rfe_features = 4
     rfe = RFE(estimator = mod_dt, n_features_to_select = rfe_features)
@@ -109,10 +123,12 @@ for train_index, test_index in loo.split(X):
     y_test_list.append(y_test[0])
     
     #fit the model on the training data 
-    mod_dt.fit(X_train_normal, y_train)
+    optuna_search.fit(X_train_normal, y_train)
+    #mod_dt.fit(X_train_normal, y_train)
     
     #predict the response for the test set
-    y_pred = mod_dt.predict(X_test_normal)
+    y_pred = optuna_search.predict(X_test_normal)
+    #y_pred = mod_dt.predict(X_test_normal)
     y_pred_list.append(y_pred)
 
 #grab and display selected feature names
