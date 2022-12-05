@@ -52,6 +52,11 @@ y_pred_list = []
 y_test_list = []
 
 feature_voting_list = []
+rfe_feature_num = []
+
+for i in range(0, 100):
+    rfe_feature_num.append(i)
+
 
 for train_index, test_index in loo.split(X):
     mod_dt = DecisionTreeClassifier(max_depth = 5, random_state = 1)
