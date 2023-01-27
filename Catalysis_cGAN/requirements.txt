@@ -1,0 +1,7 @@
+numpy
+scipy
+scikit-learn
+tensorflow-gpu
+h5py
+tensorflow-addons
+tensorflow-probability

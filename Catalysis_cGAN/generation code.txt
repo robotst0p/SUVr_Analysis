@@ -1,0 +1,7 @@
+generatorr = load_model('C:/Users/dagne/Desktop/AUD_study/Catalyst_GAN/Catalysis_cGAN/weights/wgan_luad_8999.h5')
+generatorr = load_model('C:/Users/dagne/Desktop/AUD_study/Catalyst_GAN/mnist/cgan_mnist.h5')
+
+#gan.test_generator(generator)
+synthetic_SUVR_CNT=gan.test_generator(generatorr, 0)
+
+synthetic_SUVR_AUD=gan.test_generator(generatorr, 1)
