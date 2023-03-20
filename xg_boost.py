@@ -80,7 +80,7 @@ for train_index, test_index in loo.split(X):
 
 #input voting selection threshold as percentage value (percentage of times feature needs to be selected by rfe)
 threshold = .4        
-final_feature_list, voting_dict = feature_vote(feature_voting_list, rfe_features, threshold, X_df)
+final_feature_list, voting_dict = feature_vote(feature_voting_list, rfe_features, threshold, X_df, 1)
 
 #optuna parameter tuning
 xgb_model = xgb.XGBRegressor()

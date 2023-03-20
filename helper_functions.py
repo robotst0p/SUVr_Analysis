@@ -12,7 +12,7 @@ def retrieve_feature_names(rfe_bool, data):
 
     return feature_list
 
-def feature_vote(feature_list, rfe_features, threshold, data, folds):
+def feature_vote(feature_list, threshold, data, folds):
     #threshold is percentage value
     voting_thresh = round(folds*threshold)
     
