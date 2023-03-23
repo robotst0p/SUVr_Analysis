@@ -114,9 +114,7 @@ synth_frame_y = synth_frame_y.astype(int)
 
 synth_frame_y.rename(index = synth_row_labels, inplace = True)
 
-feature_voting_list = []
-final_feature_list = []
-
+#setting initial f1 score to compare changes to 
 threshold_f1 = 0
 
 y_test_list = []
@@ -133,12 +131,12 @@ for row in list(synth_frame_x.index.values):
         y_test_list.append(y_test)
         
         #append synthetic point to X_training set
-        testing_x = synth_frame_x.loc[row]
-        X_train = X_train.append(testing_x, ignore_index = True)
+        synth_train_x = synth_frame_x.loc[row]
+        X_train = X_train.append(synth_train_x, ignore_index = True)
         
         #append synthetic point to y_training set
-        testing_y = synth_frame_y.loc[row]
-        y_train.at[len(y_train) + 1] = testing_y
+        synth_train_y = synth_frame_y.loc[row]
+        y_train.at[len(y_train) + 1] = synth_train_y
         
         train_normal = scaler.fit(X_train)
         X_train_normal = pd.DataFrame(train_normal.transform(X_train), columns = X_train.columns)
@@ -151,7 +149,7 @@ for row in list(synth_frame_x.index.values):
         
         y_pred_list.append(y_pred)
         
-    #clean test list of series objects
+    #clean test list of series objects in order to calculate f1 metric properly
     for i in range(0, len(y_test_list)):
         if (i % 2 is not 0):
             filtered_test_list.append(y_test_list[i])
