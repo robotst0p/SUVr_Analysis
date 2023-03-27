@@ -19,14 +19,12 @@ from sklearn.model_selection import LeaveOneOut
 #metrics importing (accuracy, precision, sensitivity, recall)
 from sklearn import metrics
 
-#helping functions 
-from helper_functions import retrieve_feature_names, feature_vote
-
 #parameter tuning 
 import optuna
 
 #load in suvr data as pandas dataframe
 raw_dataframe = pd.read_excel('AUD_SUVr_wb_cingulate.xlsx', index_col = 0)
+synth_raw_frame = pd.read_excel('generated_Cingulate_SUVR.xlsx')
 
 #map subject labels to numerical values 
 raw_dataframe.loc[raw_dataframe["CLASS"] == "AUD", "CLASS"] = 1
@@ -35,6 +33,10 @@ raw_dataframe.loc[raw_dataframe["CLASS"] == "CONTROL", "CLASS"] = 0
 processed_data = raw_dataframe
 
 X_df = processed_data.drop(['CLASS'], axis = 1)
+synth_frame_x = synth_raw_frame.drop(['Class'], axis = 1)
+synth_frame_y = synth_raw_frame['Class']
+
+synth_frame_y = synth_frame_y.astype(int)
 
 #convert to numpy array for training 
 X = X_df.copy()
@@ -60,66 +62,18 @@ y_test_list = []
 #store accuracies to determine which synthetic data points to add to dataset
 gan_acc_list = []
 
-#fake matrix to test GAN loop structure
-synth_frame_x = X_df.copy()
-synth_frame_y = raw_dataframe['CLASS']
-
-column_names = X_df.columns
-
-synth_class_list = []
-    
-#fill fake matrix with random values
-for row in list(synth_frame_x.index.values):
-    synth_point_list = [random.random()]*100
-    for column in column_names:
-        index = random.randint(0, len(synth_point_list) - 1)
-        synth_frame_x.loc[row, str(column)] = synth_point_list[index]
-        
-for i in range(0, len(synth_frame_y)):
-    synth_class = random.choice([0,1])
-    synth_frame_y[i] = synth_class
-    
-#rename row labels for synth dataset
-synth_row_labels = {'AUD_A_006':'synth_0',
-                    'AUD_A_009':'synth_1',
-                    'AUD_A_016':'synth_2',
-                    'AUD_A_018':'synth_3',
-                    'aud_a_019':'synth_4',
-                    'AUD_A_021':'synth_5',
-                    'AUD_A_022':'synth_6',
-                    'AUD_A_026':'synth_7',
-                    'AUD_A_027':'synth_8',
-                    'AUD_P_002':'synth_9',
-                    'AUD_P_003':'synth_10',
-                    'MSTAT_006_01':'synth_11',
-                    'AUD_C_001':'synth_12',
-                    'MSTAT_002_01':'synth_13',
-                    'MSTAT_001_01':'synth_14',
-                    'AUD_C_020':'synth_15',
-                    'ADCON_012':'synth_16',
-                    'MCON_002':'synth_17',
-                    'AUD_C_005':'synth_18',
-                    'aud_c_013':'synth_19',
-                    'MCON_014':'synth_20',
-                    'AUD_C_009':'synth_21',
-                    'MSTAT_004_01':'synth_22',
-                    'AUD_C_003':'synth_23',
-                    'AUD_C_017':'synth_24',
-                    'AUD_C_024':'synth_25',
-                    'ADCON_002':'synth_26'}
-
-synth_frame_x.rename(index = synth_row_labels, inplace = True)
-    
-synth_frame_y = synth_frame_y.astype(int)
-
-synth_frame_y.rename(index = synth_row_labels, inplace = True)
-
 #setting initial f1 score to compare changes to 
 threshold_f1 = 0
+#track f1 change due to synthetic sample being added to training set if f1 is higher than threshold
+f1_change = 0
 
 y_test_list = []
 filtered_test_list = []
 y_pred_list = []
+
+synth_dict = {}
+
+
 
 for row in list(synth_frame_x.index.values):
     for train_index, test_index in loo.split(X):
@@ -145,6 +99,7 @@ for row in list(synth_frame_x.index.values):
         svc.fit(X_train_normal, y_train)
         
         y_pred = svc.predict(X_test_normal)
+        print(y_pred)
         y_test_list.append(y_test[0])
         
         y_pred_list.append(y_pred)
@@ -154,23 +109,30 @@ for row in list(synth_frame_x.index.values):
         if (i % 2 is not 0):
             filtered_test_list.append(y_test_list[i])
     
-    
-    new_f1 = metrics.f1_score(y_pred_list, filtered_test_list)
-    print(new_f1)
+    print("YPRED: ")
+    print(y_pred_list)
+    print("YTEST: ")
+    print(filtered_test_list)
+    new_f1 = metrics.f1_score(filtered_test_list, y_pred_list)
     
     #find highest f1 score to compare new f1 score to
     for f1 in gan_acc_list:
         if f1 > threshold_f1:
             threshold_f1 = f1
         
+    #print("THRESHOLD: " + str(threshold_f1))
+    #print("NEW_f1:: " + str(new_f1))
+    
     #if new f1 is higher than current max f1, append synthetic point to X set
     if new_f1 > threshold_f1:
-        print("Synthetic sample added to training set")
+        f1_change = new_f1 - threshold_f1
+        #print("Synthetic sample added to container after f1 increase")
         synth_x_container = synth_x_container.append(synth_frame_x.loc[row])
-        print("Synthetic x added to training set")
-        add_y = pd.Series(data = testing_y, index = None)
+        add_y = pd.Series(data = synth_train_y, index = None)
         synth_y_container = synth_y_container.append(add_y)
-        print("Synthetic y added to training set")
+        synth_dict_key = str(row)
+        synth_dict[synth_dict_key] = f1_change
+    
     
     gan_acc_list.append(new_f1)
         
