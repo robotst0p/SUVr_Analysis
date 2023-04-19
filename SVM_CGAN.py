@@ -5,8 +5,6 @@ import seaborn as sn
 import random
 import time
 
- 
-
 #normalization
 from sklearn.preprocessing import StandardScaler
 
@@ -34,18 +32,8 @@ import optuna
 
 
 #tensorflow for cgan model loading
-from tensorflow.keras.layers import Input
-from tensorflow.keras.optimizers import RMSprop
-from tensorflow.keras.models import Model
-from tensorflow.keras.datasets import mnist
-from tensorflow.keras import backend as K
 from tensorflow.keras.models import load_model
-
-#from keras.utils.np_utils import to_categorical
-from tensorflow.keras.utils import to_categorical
-
 import tensorflow as tf
-from keras.callbacks import TensorBoard
 
 import numpy as np
 import argparse
@@ -60,35 +48,19 @@ synthetic_suvr = gan.test_generator(generator)
 
 #load in suvr data as pandas dataframe
 raw_dataframe = pd.read_excel('AUD_SUVr_wb_cingulate.xlsx', index_col = 0)
-synth_raw_frame = pd.read_excel('generated_Cingulate_SUVR.xlsx')
-
-
 
 #map subject labels to numerical values 
 raw_dataframe.loc[raw_dataframe["CLASS"] == "AUD", "CLASS"] = 1
 raw_dataframe.loc[raw_dataframe["CLASS"] == "CONTROL", "CLASS"] = 0
 
- 
-
 processed_data = raw_dataframe
 
- 
-
 X_df = processed_data.drop(['CLASS'], axis = 1)
-synth_frame_x = synth_raw_frame.drop(['Class'], axis = 1)
-synth_frame_y = synth_raw_frame['Class']
-
-
-synth_frame_y = synth_frame_y.astype(int)
-
-test_synth_x = pd.DataFrame(data = synthetic_suvr[0], columns = X_df.columns)
 
 #convert to numpy array for training 
 X = X_df.copy()
 y = raw_dataframe['CLASS']
 y = y.astype(int)
-
- 
 
 synth_y_container = pd.Series()
 synth_x_container = pd.DataFrame(columns = X.columns)
@@ -266,12 +238,6 @@ while synth_counter <= 27:
             
             synth_counter += 1
 
-#fix list:
-    #synthetic data is not being appended to training dataframe correctly **FIXED**
-    #clean up variable names for containers **IN PROGRESS**
-    #use only cingulate region data
-
-    
 #version notes
-#removed synthetic data preprocessing and added processing to training loop after synth data is generated for testing
-#optimized model training for cpus 
+#removed extra library imports
+#removed leftover synthetic data preprocessing 
