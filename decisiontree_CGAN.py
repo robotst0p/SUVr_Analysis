@@ -5,9 +5,6 @@ import seaborn as sn
 import random
 import time
 
-#density plotting for generated features
-import seaborn as sb
-
  
 
 #normalization
@@ -20,6 +17,7 @@ patch_sklearn()
 #model/training importing 
 from sklearn.model_selection import train_test_split
 from sklearn import svm
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.feature_selection import RFE
 
  
@@ -138,7 +136,7 @@ from optuna.distributions import CategoricalDistribution, LogUniformDistribution
 
  
 
-svc = svm.SVC(kernel='rbf', random_state=42)
+svc = DecisionTreeClassifier()
 
  
 
@@ -147,7 +145,10 @@ cv = LeaveOneOut()
  
 
 
-search_spaces =  { "C": optuna.distributions.FloatDistribution(0.1, 10, step=0.1)
+search_spaces =  { "criterion": optuna.distributions.CategoricalDistribution(choices = ('gini','entropy')), 
+                  "splitter": optuna.distributions.CategoricalDistribution(choices = ('best','random')),
+                  "max_depth": optuna.distributions.IntDistribution(1, 100),
+                  "min_samples_split": optuna.distributions.IntDistribution(2,10)
                 }
 
  
@@ -155,7 +156,7 @@ search_spaces =  { "C": optuna.distributions.FloatDistribution(0.1, 10, step=0.1
 optuna_search = OptunaSearchCV(
     estimator=svc,
     param_distributions=search_spaces,
-    n_trials=20,
+    n_trials=100,
     cv=cv,
     error_score=0.0,
     refit=True,
@@ -202,7 +203,7 @@ while synth_counter <= 27:
     
     for row in list(synth_X_normal.index.values):
         y_pred_list=[]
-        svc = svm.SVC(kernel = "rbf", C=1.7, random_state = 42)    
+        svc = DecisionTreeClassifier(criterion = 'entropy', splitter = 'random', max_depth = 12, min_samples_split = 6)    
     
         for train_index, test_index in loo.split(X_normal):
             
@@ -250,7 +251,6 @@ while synth_counter <= 27:
         score = metrics.accuracy_score(y, y_pred_final)
     
      
-
         
         #find highest f1 score to compare new f1 score to
         if score > current_highest_score:
@@ -258,9 +258,7 @@ while synth_counter <= 27:
             #X_train_intermediate
             succesful_cand_X = succesful_cand_X.append(synth_cand_x)
             succesful_cand_Y = succesful_cand_Y.append(y_train_intermediate[-1:])
-            plt.clf()
-            sb.kdeplot(data=X_normal.iloc[:, 1])
-            sb.kdeplot(data=succesful_cand_X.iloc[:,1])
+            
             print("ACCURACY INCREASED, SYNTHETIC CANDIDATE ADDED")
             print("NEW ACCURACY: " + str(score))
             print(synth_cand_x)
@@ -268,12 +266,3 @@ while synth_counter <= 27:
             
             synth_counter += 1
 
-#fix list:
-    #synthetic data is not being appended to training dataframe correctly **FIXED**
-    #clean up variable names for containers **IN PROGRESS**
-    #use only cingulate region data
-
-    
-#version notes
-#removed synthetic data preprocessing and added processing to training loop after synth data is generated for testing
-#optimized model training for cpus 
