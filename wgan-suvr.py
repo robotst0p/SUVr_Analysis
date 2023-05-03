@@ -27,6 +27,7 @@ import argparse
 import pandas as pd
 import datetime
 
+
 from lib import gan_aud as gan
 
 # def write_log(callback, names, logs, batch_no):
@@ -207,7 +208,7 @@ def build_and_train_models():
     
     #raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx') #,index_col = 0
     #raw_dataframe = pd.read_excel('AUD_SUVR_wb_cingulate.xlsx') #,index_col = 0
-    raw_dataframe = pd.read_csv('AUD_SUVR_wb_cingulate.csv') #,index_col = 0
+    raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx') #,index_col = 0
 
     
     raw_dataframe.loc[raw_dataframe["CLASS"] == "AUD", "CLASS"] = 1

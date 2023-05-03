@@ -20,6 +20,9 @@ patch_sklearn()
 #model/training importing 
 from sklearn.model_selection import train_test_split
 from sklearn import svm
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import RFE
 
  
@@ -48,11 +51,12 @@ import datetime
 from lib import gan_aud as gan
 
 #load trained cgan
-generator = load_model('/Users/tyler/Desktop/SUVr_Analysis/SUVr_Analysis/weights/wgan_CingulateSUVR_10499.h5')
+generator = load_model('C:/Users/meyer/Desktop/SUVr_Analysis/weights/wgan_CingulateSUVR_19999.h5')
 synthetic_suvr = gan.test_generator(generator)
 
+
 #load in suvr data as pandas dataframe
-raw_dataframe = pd.read_excel('AUD_SUVr_wb_cingulate.xlsx', index_col = 0)
+raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx', index_col = 0)
 
 
 
@@ -120,32 +124,69 @@ synth_dict = {}
 from optuna.integration import OptunaSearchCV
 from optuna.distributions import CategoricalDistribution, LogUniformDistribution
 
- 
+#prompt user to enter desired model type
+print("MODELS:")
+print("svm" + "\n" + "logreg" + "\n" + "decisiontree" + "\n" + "randomforest") 
 
-svc = svm.SVC(kernel='rbf', random_state=42)
+model_select = input("ENTER DESIRED MODEL OF THOSE LISTED: ")
 
- 
+
+if (model_select == "svm"):
+    reset_model = svm.SVC(kernel='rbf', random_state=42)
+elif (model_select == "randomforest"):
+    reset_model = RandomForestClassifier()
+elif (model_select == "logreg"):
+    reset_model = LogisticRegression()
+elif (model_select == "decisiontree"):
+    reset_model = DecisionTreeClassifier()
 
 cv = LeaveOneOut()
 
- 
-
-
-search_spaces =  { "C": optuna.distributions.FloatDistribution(0.1, 10, step=0.1)
+#optuna search parameters for each model type
+search_spaces_svm =  { "C": optuna.distributions.FloatDistribution(0.1, 10, step=0.1)
                 }
 
+search_spaces_logreg =  { "C": optuna.distributions.FloatDistribution(0.1, 10, step=0.1),
+                         "penalty": optuna.distributions.CategoricalDistribution(["l1","l2","elasticnet"]),
+                         "dual": optuna.distributions.CategoricalDistribution([True,False]),
+                         "tol": optuna.distributions.FloatDistribution(0, .1, step = .1),
+                         "random_state": optuna.distributions.IntDistribution(1, 100, step = 1),
+                         "solver": optuna.distributions.CategoricalDistribution(["lbfgs","liblinear","newton-cg","newton-cholesky","sag","saga"])
+                }
+
+search_spaces_decisiontree =  { "criterion": optuna.distributions.CategoricalDistribution(["gini","entropy","log_loss"]),
+                               "splitter": optuna.distributions.CategoricalDistribution(["best","random"]),
+                               "max_depth": optuna.distributions.IntDistribution(1, 100, step = 1),
+                               "min_samples_split": optuna.distributions.IntDistribution(2, 10, step = 1),
+                               "random_state": optuna.distributions.IntDistribution(0, 100, step = 5)
+
+                }
+
+search_spaces_randomforest =  { "criterion": optuna.distributions.CategoricalDistribution(["gini","entropy"]),
+                                "n_estimators": optuna.distributions.IntDistribution(100, 1000, step = 100),
+                                "max_depth": optuna.distributions.IntDistribution(1, 100, step = 1),
+                                "min_samples_split": optuna.distributions.IntDistribution(2, 10, step = 1)
+                }
  
+ #{'criterion': 'entropy', 'n_estimators': 500, 'max_depth': 24, 'min_samples_split': 4}.
+if (model_select == "svm"):
+    param_select = search_spaces_svm
+elif (model_select == "randomforest"):
+    param_select = search_spaces_randomforest
+elif (model_select == "logreg"):
+    param_select = search_spaces_logreg
+elif (model_select == "decisiontree"):
+    param_select = search_spaces_decisiontree
+
 
 optuna_search = OptunaSearchCV(
-    estimator=svc,
-    param_distributions=search_spaces,
-    n_trials=20,
+    estimator=reset_model,
+    param_distributions = param_select,
+    n_trials=10,
     cv=cv,
     error_score=0.0,
     refit=True,
 )
-
- 
 
 
 optuna_search.fit(X_normal, y.astype(int))
@@ -153,9 +194,18 @@ optuna_search.fit(X_normal, y.astype(int))
  
 
 optuna_search.best_score_
-optuna_search.best_params_
+best_params = optuna_search.best_params_
 
- 
+if (model_select == "svm"):
+    reset_model = svm.SVC(**best_params)
+elif (model_select == "randomforest"):
+    reset_model = RandomForestClassifier(**best_params)
+elif (model_select == "logreg"):
+    reset_model = LogisticRegression(**best_params)
+elif (model_select == "decisiontree"):
+    reset_model = DecisionTreeClassifier(**best_params)
+
+print(best_params) 
 
 current_highest_score= optuna_search.best_score_
 
@@ -173,7 +223,6 @@ synth_counter = 0
 
 while synth_counter <= 27:
     synthetic_suvr = gan.test_generator(generator)
-    
     synth_frame_x = pd.DataFrame(data = synthetic_suvr[0], columns = X_df.columns)
     synth_frame_y = pd.Series(synthetic_suvr[1])
     
@@ -181,12 +230,13 @@ while synth_counter <= 27:
     scaler2 = StandardScaler()
 
     #raw_data normalization of feature vector
+
     X_model2 = scaler2.fit(synth_frame_x)
     synth_X_normal = pd.DataFrame(X_model2.transform(synth_frame_x), columns = X_df.columns)
-    
+    #{'criterion': 'entropy', 'n_estimators': 500, 'max_depth': 24, 'min_samples_split': 4}.
     for row in list(synth_X_normal.index.values):
         y_pred_list=[]
-        svc = svm.SVC(kernel = "rbf", C=1.7, random_state = 42)    
+        svc = reset_model  
     
         for train_index, test_index in loo.split(X_normal):
             
