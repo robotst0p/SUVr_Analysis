@@ -5,6 +5,10 @@ import seaborn as sn
 import random
 import time
 
+#disable pandas warnings for deprecated methods 
+import warnings
+warnings.filterwarnings('ignore')
+
 #density plotting for generated features
 import seaborn as sb
 
@@ -51,14 +55,12 @@ import datetime
 from lib import gan_aud as gan
 
 #load trained cgan
-generator = load_model('C:/Users/meyer/Desktop/SUVr_Analysis/weights/wgan_CingulateSUVR_19999.h5')
+generator = load_model('C:/Users/meyer/Desktop/SUVr_Analysis/weights/wgan_CingulateSUVR_18999.h5')
 synthetic_suvr = gan.test_generator(generator)
 
 
-#load in suvr data as pandas dataframe
-raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx', index_col = 0)
-
-
+#load in suvr data or only cingulate data as pandas dataframe
+raw_dataframe = pd.read_excel('AUD_SUVR_wb_cingulate.xlsx', index_col = 0)
 
 #map subject labels to numerical values 
 raw_dataframe.loc[raw_dataframe["CLASS"] == "AUD", "CLASS"] = 1
@@ -67,11 +69,6 @@ raw_dataframe.loc[raw_dataframe["CLASS"] == "CONTROL", "CLASS"] = 0
 processed_data = raw_dataframe
 
 X_df = processed_data.drop(['CLASS'], axis = 1)
-
-
-
-
-
 
 #convert to numpy array for training 
 X = X_df.copy()
@@ -191,8 +188,6 @@ optuna_search = OptunaSearchCV(
 
 optuna_search.fit(X_normal, y.astype(int))
 
- 
-
 optuna_search.best_score_
 best_params = optuna_search.best_params_
 
@@ -283,9 +278,6 @@ while synth_counter <= 27:
         #score = metrics.f1_score(y, y_pred_final)
         score = metrics.accuracy_score(y, y_pred_final)
     
-     
-
-        
         #find highest f1 score to compare new f1 score to
         if score > current_highest_score:
             current_highest_score = score

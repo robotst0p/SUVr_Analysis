@@ -14,8 +14,8 @@ from tensorflow.keras.layers import LeakyReLU
 from tensorflow.keras.layers import BatchNormalization
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import concatenate
-
-from keras.utils.np_utils import to_categorical
+from tensorflow.keras import utils
+from tensorflow.keras.utils import to_categorical
 #import tensorflow as tf
 import tensorflow.keras.backend as K
 import tensorflow.keras.layers as tl

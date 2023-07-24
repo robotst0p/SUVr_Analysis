@@ -49,8 +49,8 @@ from lib import gan_aud as gan
         
 def write_log(writer, d_loss, a_loss, i):
     with writer.as_default():
-        tf.summary.scalar('Discriminator_loss', d_loss,  i)
-        tf.summary.scalar( 'Adversarial_loss', a_loss , i)
+        tf.summary.scalar('Discriminator_loss', d_loss,  step = i)
+        tf.summary.scalar( 'Adversarial_loss', a_loss , step = i)
         #tf.summary.scalar('Discriminator_loss', d_loss, 'Adversarial_loss', a_loss )
 
         writer.flush() 
@@ -182,6 +182,7 @@ def train(models, data, params):
         
         #### tensorboard
         #write_log(writer_a, writer_d, loss, ad_loss, i)
+        print(i)
         write_log(writer, loss, ad_loss, i)
 
         
@@ -208,7 +209,7 @@ def build_and_train_models():
     
     #raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx') #,index_col = 0
     #raw_dataframe = pd.read_excel('AUD_SUVR_wb_cingulate.xlsx') #,index_col = 0
-    raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx') #,index_col = 0
+    raw_dataframe = pd.read_excel('AUD_SUVR_wb_cingulate.xlsx') #,index_col = 0
 
     
     raw_dataframe.loc[raw_dataframe["CLASS"] == "AUD", "CLASS"] = 1
@@ -233,7 +234,7 @@ def build_and_train_models():
     clip_value = 0.01
     batch_size = 27#64
     lr = 5e-5
-    train_steps = 20000#2000# 25000
+    train_steps = 20000 
     
     n_samples = x_train.shape[1]   # 
     input_shape = (n_samples, )    # input shape 1x100
