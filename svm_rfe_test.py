@@ -1,3 +1,9 @@
+#change notes 
+#cingulate only data instead of rfe
+#user model selection with optuna parameter tuning
+
+
+
 #data processing libraries
 import pandas as pd
 import numpy as np 

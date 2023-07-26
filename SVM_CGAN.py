@@ -25,9 +25,8 @@ patch_sklearn()
 from sklearn.model_selection import train_test_split
 from sklearn import svm
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_selection import RFE
+import xgboost as xgb
 
  
 
@@ -123,7 +122,7 @@ from optuna.distributions import CategoricalDistribution, LogUniformDistribution
 
 #prompt user to enter desired model type
 print("MODELS:")
-print("svm" + "\n" + "logreg" + "\n" + "decisiontree" + "\n" + "randomforest") 
+print("svm" + "\n" + "xgboost" + "\n" + "decisiontree" + "\n" + "randomforest") 
 
 model_select = input("ENTER DESIRED MODEL OF THOSE LISTED: ")
 
@@ -132,8 +131,8 @@ if (model_select == "svm"):
     reset_model = svm.SVC(kernel='rbf', random_state=42)
 elif (model_select == "randomforest"):
     reset_model = RandomForestClassifier()
-elif (model_select == "logreg"):
-    reset_model = LogisticRegression()
+elif (model_select == "xgboost"):
+    reset_model = xgb.XGBClassifier()
 elif (model_select == "decisiontree"):
     reset_model = DecisionTreeClassifier()
 
@@ -164,14 +163,15 @@ search_spaces_randomforest =  { "criterion": optuna.distributions.CategoricalDis
                                 "max_depth": optuna.distributions.IntDistribution(1, 100, step = 1),
                                 "min_samples_split": optuna.distributions.IntDistribution(2, 10, step = 1)
                 }
+
+search_spaces_xgboost = {"tree_method": optuna.distributions.CategoricalDistribution(["auto","gpu_hist"])}
  
- #{'criterion': 'entropy', 'n_estimators': 500, 'max_depth': 24, 'min_samples_split': 4}.
 if (model_select == "svm"):
     param_select = search_spaces_svm
 elif (model_select == "randomforest"):
     param_select = search_spaces_randomforest
-elif (model_select == "logreg"):
-    param_select = search_spaces_logreg
+elif (model_select == "xgboost"):
+    param_select = search_spaces_xgboost
 elif (model_select == "decisiontree"):
     param_select = search_spaces_decisiontree
 
@@ -179,7 +179,7 @@ elif (model_select == "decisiontree"):
 optuna_search = OptunaSearchCV(
     estimator=reset_model,
     param_distributions = param_select,
-    n_trials=10,
+    n_trials=20,
     cv=cv,
     error_score=0.0,
     refit=True,
@@ -195,8 +195,8 @@ if (model_select == "svm"):
     reset_model = svm.SVC(**best_params)
 elif (model_select == "randomforest"):
     reset_model = RandomForestClassifier(**best_params)
-elif (model_select == "logreg"):
-    reset_model = LogisticRegression(**best_params)
+elif (model_select == "xgboost"):
+    reset_model = xgb.XGBClassifier(**best_params)
 elif (model_select == "decisiontree"):
     reset_model = DecisionTreeClassifier(**best_params)
 
