@@ -1,0 +1,33 @@
+NO GAN MODELS:
+    xgboost (tree_method: auto):
+        Accuracy: 0.5925925925925926
+        Precision: 0.5
+        Recall: 0.45454545454545453
+    svm (C: 1.6):
+        Accuracy: 0.7777777777777778
+        Precision: 0.8571428571428571
+        Recall: 0.5454545454545454
+    randomforest ('criterion': 'entropy', 'n_estimators': 400, 'max_depth': 40, 'min_samples_split': 4):
+        Accuracy: 0.5185185185185185
+        Precision: 0.3333333333333333
+        Recall: 0.18181818181818182
+
+GAN MODELS:
+    randomforest (criterion': 'gini', 'n_estimators': 400, 'max_depth': 90, 'min_samples_split': 9):
+        1 synthetic subject:
+            Accuracy: 0.7037037037037037
+        2 synthetic subjects:
+            Accuracy: 0.7407407407407407
+        3 synthetic subjects:
+            Accuracy: 0.7777777777777778
+        4 synthetic subjects:
+            Accuracy: 0.8148148148148148
+    svm ('C': 1.7000000000000002):
+        1 synthetic subject:
+            Accuracy: 0.7777777777777778
+        2 synthetic subjects:
+            Accuracy: 0.8148148148148148
+        3 synthetic subjects:
+            Accuracy: 0.8518518518518519
+        4 synthetic subjects:
+            Accuracy: 0.8888888888888888
