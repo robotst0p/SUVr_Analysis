@@ -13,21 +13,97 @@ NO GAN MODELS:
         Recall: 0.18181818181818182
 
 GAN MODELS:
-    randomforest (criterion': 'gini', 'n_estimators': 400, 'max_depth': 90, 'min_samples_split': 9):
+    randomforest {'criterion': 'entropy', 'n_estimators': 600, 'max_depth': 77, 'min_samples_split': 2}:
         1 synthetic subject:
+            Accuracy: 0.6666666666666666
+            Precision: 0.625
+            Recall: 0.45454545454545453
+            METRICS REPORT:               precision    recall  f1-score   support
+
+                       0       0.68      0.81      0.74        16
+                       1       0.62      0.45      0.53        11
+
+                accuracy                           0.67        27
+               macro avg       0.65      0.63      0.63        27
+            weighted avg       0.66      0.67      0.65        27
+        2 synthetic subjects:
             Accuracy: 0.7037037037037037
-        2 synthetic subjects:
+            Precision: 0.6666666666666666
+            Recall: 0.5454545454545454
+            METRICS REPORT:               precision    recall  f1-score   support
+
+                       0       0.72      0.81      0.76        16
+                       1       0.67      0.55      0.60        11
+
+                accuracy                           0.70        27
+               macro avg       0.69      0.68      0.68        27
+            weighted avg       0.70      0.70      0.70        27
+        3 synthetic subjects:
             Accuracy: 0.7407407407407407
-        3 synthetic subjects:
-            Accuracy: 0.7777777777777778
-        4 synthetic subjects:
-            Accuracy: 0.8148148148148148
-    svm ('C': 1.7000000000000002):
+            Precision: 0.7
+            Recall: 0.6363636363636364
+    svm ('C': 1.6):
         1 synthetic subject:
-            Accuracy: 0.7777777777777778
+            Accuracy: 0.7407407407407407
+            Precision: 0.75
+            Recall: 0.5454545454545454
+            METRICS REPORT:               precision    recall  f1-score   support
+
+                       0       0.74      0.88      0.80        16
+                       1       0.75      0.55      0.63        11
+
+                accuracy                           0.74        27
+               macro avg       0.74      0.71      0.72        27
+            weighted avg       0.74      0.74      0.73        27
         2 synthetic subjects:
-            Accuracy: 0.8148148148148148
+            Accuracy: 0.7777777777777778
+            Precision: 0.7777777777777778
+            Recall: 0.6363636363636364
+            METRICS REPORT:               precision    recall  f1-score   support
+
+                       0       0.78      0.88      0.82        16
+                       1       0.78      0.64      0.70        11
+
+                accuracy                           0.78        27
+               macro avg       0.78      0.76      0.76        27
+            weighted avg       0.78      0.78      0.77        27
         3 synthetic subjects:
-            Accuracy: 0.8518518518518519
+           Accuracy: 0.8148148148148148
+           Precision: 0.875
+           Recall: 0.6363636363636364
+           METRICS REPORT:               precision    recall  f1-score   support
+
+                      0       0.79      0.94      0.86        16
+                      1       0.88      0.64      0.74        11
+
+               accuracy                           0.81        27
+              macro avg       0.83      0.79      0.80        27
+           weighted avg       0.82      0.81      0.81        27
         4 synthetic subjects:
             Accuracy: 0.8888888888888888
+            Precision: 0.9
+            Recall: 0.8181818181818182
+            METRICS REPORT:               precision    recall  f1-score   support
+
+                       0       0.88      0.94      0.91        16
+                       1       0.90      0.82      0.86        11
+
+                accuracy                           0.89        27
+               macro avg       0.89      0.88      0.88        27
+            weighted avg       0.89      0.89      0.89        27
+        5 synthetic subjects:
+           Accuracy: 0.9259259259259259
+           Precision: 0.9090909090909091
+           Recall: 0.9090909090909091
+           METRICS REPORT:               precision    recall  f1-score   support
+
+                      0       0.94      0.94      0.94        16
+                      1       0.91      0.91      0.91        11
+
+               accuracy                           0.93        27
+              macro avg       0.92      0.92      0.92        27
+           weighted avg       0.93      0.93      0.93        27
+
+
+sensitivity and specificity
+

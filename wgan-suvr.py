@@ -91,7 +91,7 @@ def train(models, data, params):
     # writer_d = tf.summary.create_file_writer("./logs/logs_d")
     # writer_a = tf.summary.create_file_writer("./logs/logs_a")
     
-    writer = tf.summary.create_file_writer("./logs/log_cingulate_batch3_latent4_lr-5e-5")
+    writer = tf.summary.create_file_writer("/Users/tyler/Desktop/SUVr_Analysis/SUVr_Analysis/logs/log_cingulate_batch3_latent4_lr-5e-5")
 
     # network parameters
     (batch_size, latent_size, n_critic, clip_value, train_steps, model_name) = params

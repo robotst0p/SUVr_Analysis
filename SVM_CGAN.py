@@ -54,7 +54,7 @@ import datetime
 from lib import gan_aud as gan
 
 #load trained cgan
-generator = load_model('C:/Users/meyer/Desktop/SUVr_Analysis/weights/wgan_CingulateSUVR_18999.h5')
+generator = load_model('/Users/tyler/Desktop/SUVr_Analysis/SUVr_Analysis/weights/wgan_CingulateSUVR_17999.h5')
 synthetic_suvr = gan.test_generator(generator)
 
 
@@ -171,7 +171,7 @@ if (model_select == "svm"):
 elif (model_select == "randomforest"):
     param_select = search_spaces_randomforest
 elif (model_select == "xgboost"):
-    param_select = search_spaces_xgboost
+    param_select = search_spaces_svm
 elif (model_select == "decisiontree"):
     param_select = search_spaces_decisiontree
 
@@ -196,7 +196,7 @@ if (model_select == "svm"):
 elif (model_select == "randomforest"):
     reset_model = RandomForestClassifier(**best_params)
 elif (model_select == "xgboost"):
-    reset_model = xgb.XGBClassifier(**best_params)
+    reset_model = xgb.XGBClassifier()
 elif (model_select == "decisiontree"):
     reset_model = DecisionTreeClassifier(**best_params)
 
@@ -231,6 +231,7 @@ while synth_counter <= 27:
     #{'criterion': 'entropy', 'n_estimators': 500, 'max_depth': 24, 'min_samples_split': 4}.
     for row in list(synth_X_normal.index.values):
         y_pred_list=[]
+        y_test_list=[] 
         svc = reset_model  
     
         for train_index, test_index in loo.split(X_normal):
@@ -265,7 +266,7 @@ while synth_counter <= 27:
             
             y_pred = svc.predict(X_test)
             #y_test_list.append(y_test[0])
-            
+            y_test_list.append(y_test[0])
             y_pred_list.append(y_pred[0])
             
         
@@ -290,6 +291,13 @@ while synth_counter <= 27:
             print("ACCURACY INCREASED, SYNTHETIC CANDIDATE ADDED")
             print("NEW ACCURACY: " + str(score))
             print(synth_cand_x)
+            
+            print("Accuracy:", metrics.accuracy_score(y_test_list, y_pred_list))
+            print("Precision:", metrics.precision_score(y_test_list, y_pred_list))
+            print("Recall:", metrics.recall_score(y_test_list, y_pred_list))
+            
+            print("METRICS REPORT:", metrics.classification_report(y_test_list, y_pred_list))
+            
             time.sleep(1)
             
             synth_counter += 1
