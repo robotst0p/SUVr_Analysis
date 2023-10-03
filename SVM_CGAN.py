@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np 
 import matplotlib.pyplot as plt
+plt.matplotlib.use('TkAgg')
 import seaborn as sn
 import random
 import time
@@ -51,10 +52,13 @@ import argparse
 import pandas as pd
 import datetime
 
+#save and load variables
+import pickle
+
 from lib import gan_aud as gan
 
 #load trained cgan
-generator = load_model('/Users/tyler/Desktop/SUVr_Analysis/SUVr_Analysis/weights/wgan_CingulateSUVR_17999.h5')
+generator = load_model('C:/Users/meyer/Desktop/SUVr_Analysis/weights/wgan_CingulateSUVR_29999.h5')
 synthetic_suvr = gan.test_generator(generator)
 
 
@@ -67,10 +71,20 @@ raw_dataframe.loc[raw_dataframe["CLASS"] == "CONTROL", "CLASS"] = 0
 
 processed_data = raw_dataframe
 
+control_frame = processed_data.loc[(processed_data['CLASS']) == 0]
+aud_frame = processed_data.loc[(processed_data['CLASS']) == 1]
+
+control_frame_x = control_frame.drop(['CLASS'], axis = 1)
+aud_frame_x = aud_frame.drop(['CLASS'], axis = 1)
+
+
 X_df = processed_data.drop(['CLASS'], axis = 1)
 
 #convert to numpy array for training 
 X = X_df.copy()
+control_x = control_frame_x.copy()
+aud_x = aud_frame_x.copy()
+
 y = raw_dataframe['CLASS']
 y = y.astype(int)
 
@@ -86,7 +100,15 @@ scaler1 = StandardScaler()
 
 #raw_data normalization of feature vector
 X_model = scaler1.fit(X)
+control_x_model = scaler1.fit(control_x)
+aud_x_model = scaler1.fit(aud_x)
+
 X_normal = pd.DataFrame(X_model.transform(X), columns = X_df.columns)
+control_frame_normal = pd.DataFrame(control_x_model.transform(control_x), columns = X_df.columns)
+aud_frame_normal = pd.DataFrame(aud_x_model.transform(aud_x), columns = X_df.columns)
+
+aud_frame_normal.to_pickle("./aud_frame_normal.pkl")
+control_frame_normal.to_pickle("./control_frame_normal.pkl")
 
 
 #leaveoneout cross validation and decisiontree model creation 
@@ -285,9 +307,48 @@ while synth_counter <= 27:
             #X_train_intermediate
             succesful_cand_X = succesful_cand_X.append(synth_cand_x)
             succesful_cand_Y = succesful_cand_Y.append(y_train_intermediate[-1:])
+            succesful_cand_X.to_pickle("./svm_cand_x.pkl")
+            succesful_cand_Y.to_pickle("./svm_cand_y.pkl")
+
             plt.clf()
-            sb.kdeplot(data=X_normal.iloc[:, 1])
-            sb.kdeplot(data=succesful_cand_X.iloc[:,1])
+            f, ([ax1, ax2, ax3, ax4], [ax5, ax6, ax7, ax8]) = plt.subplots(nrows = 2, ncols = 4)
+
+            plt.title("HDAC/SUVR regional (Cingulate) value distribution (density plot)")
+
+            sb.kdeplot(data = succesful_cand_X.iloc[:,0], ax = ax1, label = 'synthetic AUD', color = 'orange')
+            sb.kdeplot(data = succesful_cand_X.iloc[:,1], ax = ax2, label = 'synthetic AUD', color = 'orange')
+            sb.kdeplot(data = succesful_cand_X.iloc[:,2], ax = ax3, label = 'synthetic AUD', color = 'orange')
+            sb.kdeplot(data = succesful_cand_X.iloc[:,3], ax = ax4, label = 'synthetic AUD', color = 'orange')
+            sb.kdeplot(data = succesful_cand_X.iloc[:,4], ax = ax5, label = 'synthetic AUD', color = 'orange')
+            sb.kdeplot(data = succesful_cand_X.iloc[:,5], ax = ax6, label = 'synthetic AUD', color = 'orange')
+            sb.kdeplot(data = succesful_cand_X.iloc[:,6], ax = ax7, label = 'synthetic AUD', color = 'orange')
+            sb.kdeplot(data = succesful_cand_X.iloc[:,7], ax = ax8, label = 'synthetic AUD', color = 'orange')
+
+            sb.kdeplot(data = aud_frame_normal.iloc[:, 0], ax = ax1, label = 'aud_original', color = 'red')
+            sb.kdeplot(data = aud_frame_normal.iloc[:, 1], ax = ax2, label = 'aud_original', color = 'red')
+            sb.kdeplot(data = aud_frame_normal.iloc[:, 2], ax = ax3, label = 'aud_original', color = 'red')
+            sb.kdeplot(data = aud_frame_normal.iloc[:, 3], ax = ax4, label = 'aud_original', color = 'red')
+            sb.kdeplot(data = aud_frame_normal.iloc[:, 4], ax = ax5, label = 'aud_original', color = 'red')
+            sb.kdeplot(data = aud_frame_normal.iloc[:, 5], ax = ax6, label = 'aud_original', color = 'red')
+            sb.kdeplot(data = aud_frame_normal.iloc[:, 6], ax = ax7, label = 'aud_original', color = 'red')
+            sb.kdeplot(data = aud_frame_normal.iloc[:, 7], ax = ax8, label = 'aud_original', color = 'red')
+
+            sb.kdeplot(data = control_frame_normal.iloc[:, 0], ax = ax1, label = 'control_original', color = 'blue')
+            sb.kdeplot(data = control_frame_normal.iloc[:, 1], ax = ax2, label = 'control_original', color = 'blue')
+            sb.kdeplot(data = control_frame_normal.iloc[:, 2], ax = ax3, label = 'control_original', color = 'blue')
+            sb.kdeplot(data = control_frame_normal.iloc[:, 3], ax = ax4, label = 'control_original', color = 'blue')
+            sb.kdeplot(data = control_frame_normal.iloc[:, 4], ax = ax5, label = 'control_original', color = 'blue')
+            sb.kdeplot(data = control_frame_normal.iloc[:, 5], ax = ax6, label = 'control_original', color = 'blue')
+            sb.kdeplot(data = control_frame_normal.iloc[:, 6], ax = ax7, label = 'control_original', color = 'blue')
+            sb.kdeplot(data = control_frame_normal.iloc[:, 7], ax = ax8, label = 'control_original', color = 'blue')
+
+            plt.draw()
+            plt.legend()
+            plt.show()
+            plt.clf()
+            #plt.clf()
+            #sb.kdeplot(data=X_normal.iloc[:, 1])
+            #sb.kdeplot(data=succesful_cand_X.iloc[:,1])
             print("ACCURACY INCREASED, SYNTHETIC CANDIDATE ADDED")
             print("NEW ACCURACY: " + str(score))
             print(synth_cand_x)

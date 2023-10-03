@@ -34,6 +34,10 @@ from helper_functions import retrieve_feature_names, feature_vote
 #parameter tuning 
 import optuna
 
+#improve cpu training performance
+from sklearnex import patch_sklearn
+patch_sklearn()
+
 #load in suvr data as pandas dataframe
 raw_dataframe = pd.read_excel('AUD_SUVR_wb_cingulate.xlsx', index_col = 0)
 
@@ -178,3 +182,4 @@ for train_index, test_index in loo.split(X):
 print("Accuracy:", metrics.accuracy_score(y_test_list, y_pred_list))
 print("Precision:", metrics.precision_score(y_test_list, y_pred_list))
 print("Recall:", metrics.recall_score(y_test_list, y_pred_list))
+print("METRICS REPORT:", metrics.classification_report(y_test_list, y_pred_list))
