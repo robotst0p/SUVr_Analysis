@@ -27,6 +27,7 @@ import argparse
 import pandas as pd
 import datetime
 
+
 from lib import gan_aud as gan
 
 # def write_log(callback, names, logs, batch_no):
@@ -48,8 +49,8 @@ from lib import gan_aud as gan
         
 def write_log(writer, d_loss, a_loss, i):
     with writer.as_default():
-        tf.summary.scalar('Discriminator_loss', d_loss,  i)
-        tf.summary.scalar( 'Adversarial_loss', a_loss , i)
+        tf.summary.scalar('Discriminator_loss', d_loss,  step = i)
+        tf.summary.scalar( 'Adversarial_loss', a_loss , step = i)
         #tf.summary.scalar('Discriminator_loss', d_loss, 'Adversarial_loss', a_loss )
 
         writer.flush() 
@@ -90,7 +91,7 @@ def train(models, data, params):
     # writer_d = tf.summary.create_file_writer("./logs/logs_d")
     # writer_a = tf.summary.create_file_writer("./logs/logs_a")
     
-    writer = tf.summary.create_file_writer("./logs/log_cingulate_batch3_latent4_lr-5e-5")
+    writer = tf.summary.create_file_writer("C:/Users/meyer/Desktop/SUVr_Analysis/logs/log_cingulate_batch3_latent4_lr-5e-5")
 
     # network parameters
     (batch_size, latent_size, n_critic, clip_value, train_steps, model_name) = params
@@ -181,6 +182,7 @@ def train(models, data, params):
         
         #### tensorboard
         #write_log(writer_a, writer_d, loss, ad_loss, i)
+        print(i)
         write_log(writer, loss, ad_loss, i)
 
         
@@ -207,7 +209,7 @@ def build_and_train_models():
     
     #raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx') #,index_col = 0
     #raw_dataframe = pd.read_excel('AUD_SUVR_wb_cingulate.xlsx') #,index_col = 0
-    raw_dataframe = pd.read_csv('AUD_SUVR_wb_cingulate.csv') #,index_col = 0
+    raw_dataframe = pd.read_excel('AUD_SUVR_wb_cingulate.xlsx') #,index_col = 0
 
     
     raw_dataframe.loc[raw_dataframe["CLASS"] == "AUD", "CLASS"] = 1
@@ -232,7 +234,7 @@ def build_and_train_models():
     clip_value = 0.01
     batch_size = 27#64
     lr = 5e-5
-    train_steps = 20000#2000# 25000
+    train_steps = 30000
     
     n_samples = x_train.shape[1]   # 
     input_shape = (n_samples, )    # input shape 1x100

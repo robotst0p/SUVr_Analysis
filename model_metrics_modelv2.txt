@@ -1,0 +1,502 @@
+NO GAN MODELS:
+    svm (c:3.0):
+        Accuracy: 0.7407407407407407
+        Precision: 0.75
+        Recall: 0.5454545454545454
+                METRICS REPORT:               precision    recall  f1-score   support        
+
+                0       0.74      0.88      0.80        16
+                1       0.75      0.55      0.63        11
+
+            accuracy                           0.74        27
+        macro avg       0.74      0.71      0.72        27
+        weighted avg       0.74      0.74      0.73        27
+    
+    xgboost ('tree_method': 'auto'):
+        Accuracy: 0.5925925925925926
+        Precision: 0.5
+        Recall: 0.45454545454545453
+        METRICS REPORT:               precision    recall  f1-score   support
+
+           0       0.65      0.69      0.67        16
+           1       0.50      0.45      0.48        11
+
+            accuracy                           0.59        27
+        macro avg       0.57      0.57      0.57        27
+        weighted avg       0.59      0.59      0.59        27
+
+    randomforest ('criterion': 'entropy', 'n_estimators': 100, 'max_depth': 11, 'min_samples_split': 10):
+        Accuracy: 0.5185185185185185
+        Precision: 0.3333333333333333
+        Recall: 0.18181818181818182
+        METRICS REPORT:               precision    recall  f1-score   support        
+
+                0       0.57      0.75      0.65        16
+                1       0.33      0.18      0.24        11
+
+            accuracy                           0.52        27
+        macro avg       0.45      0.47      0.44        27
+        weighted avg       0.47      0.52      0.48        27
+
+GAN MODELS:
+    svm:
+        1 synthetic sample:
+            NEW ACCURACY: 0.7407407407407407
+            ctx-lh-caudalanteriorcingulate     0.051970
+            ctx-lh-isthmuscingulate           -0.240802
+            ctx-lh-posteriorcingulate         -0.012336
+            ctx-lh-rostralanteriorcingulate   -0.120295
+            ctx-rh-caudalanteriorcingulate    -0.438278
+            ctx-rh-isthmuscingulate           -0.484135
+            ctx-rh-posteriorcingulate         -0.413500
+            ctx-rh-rostralanteriorcingulate    0.938770
+            Accuracy: 0.7407407407407407
+            Precision: 0.75
+            Recall: 0.5454545454545454
+            METRICS REPORT:               precision    recall  f1-score   support
+
+                    0       0.74      0.88      0.80        16
+                    1       0.75      0.55      0.63        11
+
+                accuracy                           0.74        27
+            macro avg       0.74      0.71      0.72        27
+            weighted avg       0.74      0.74      0.73        27
+            
+        2 synthetic samples:
+            NEW ACCURACY: 0.7777777777777778
+            ctx-lh-caudalanteriorcingulate    -0.690434
+            ctx-lh-isthmuscingulate            0.427626
+            ctx-lh-posteriorcingulate          0.706489
+            ctx-lh-rostralanteriorcingulate    0.065199
+            ctx-rh-caudalanteriorcingulate    -0.300961
+            ctx-rh-isthmuscingulate            0.423915
+            ctx-rh-posteriorcingulate          0.076208
+            ctx-rh-rostralanteriorcingulate   -1.031274
+            Accuracy: 0.7777777777777778
+            Precision: 0.7777777777777778
+            Recall: 0.6363636363636364
+            METRICS REPORT:               precision    recall  f1-score   support
+
+                    0       0.78      0.88      0.82        16
+                    1       0.78      0.64      0.70        11
+
+                accuracy                           0.78        27
+            macro avg       0.78      0.76      0.76        27
+            weighted avg       0.78      0.78      0.77        27
+        3 synthetic samples:
+            NEW ACCURACY: 0.8148148148148148
+            ctx-lh-caudalanteriorcingulate    -0.262550
+            ctx-lh-isthmuscingulate           -0.299517
+            ctx-lh-posteriorcingulate         -1.296879
+            ctx-lh-rostralanteriorcingulate   -1.237391
+            ctx-rh-caudalanteriorcingulate    -0.983676
+            ctx-rh-isthmuscingulate            0.731804
+            ctx-rh-posteriorcingulate         -0.915168
+            ctx-rh-rostralanteriorcingulate    0.020207
+            Accuracy: 0.8148148148148148
+            Precision: 0.8
+            Recall: 0.7272727272727273
+            METRICS REPORT:               precision    recall  f1-score   support
+
+                    0       0.82      0.88      0.85        16
+                    1       0.80      0.73      0.76        11
+
+                accuracy                           0.81        27
+            macro avg       0.81      0.80      0.81        27
+            weighted avg       0.81      0.81      0.81        27
+        4 synthetic samples:
+            NEW ACCURACY: 0.8518518518518519
+            ctx-lh-caudalanteriorcingulate     0.467475
+            ctx-lh-isthmuscingulate            0.433235
+            ctx-lh-posteriorcingulate         -0.601826
+            ctx-lh-rostralanteriorcingulate    0.943474
+            ctx-rh-caudalanteriorcingulate     0.412483
+            ctx-rh-isthmuscingulate           -0.383413
+            ctx-rh-posteriorcingulate         -0.029514
+            ctx-rh-rostralanteriorcingulate   -0.285317
+            Accuracy: 0.8518518518518519
+            Precision: 0.8888888888888888
+            Recall: 0.7272727272727273
+            METRICS REPORT:               precision    recall  f1-score   support
+
+                    0       0.83      0.94      0.88        16
+                    1       0.89      0.73      0.80        11
+
+                accuracy                           0.85        27
+            macro avg       0.86      0.83      0.84        27
+            weighted avg       0.86      0.85      0.85        27
+        5 synthetic samples:
+        NEW ACCURACY: 0.8888888888888888
+        ctx-lh-caudalanteriorcingulate    -1.249403
+        ctx-lh-isthmuscingulate            1.693902
+        ctx-lh-posteriorcingulate          0.061557
+        ctx-lh-rostralanteriorcingulate   -1.385081
+        ctx-rh-caudalanteriorcingulate    -1.228791
+        ctx-rh-isthmuscingulate            0.691864
+        ctx-rh-posteriorcingulate         -0.969008
+        ctx-rh-rostralanteriorcingulate    1.475253
+        Accuracy: 0.8888888888888888
+        Precision: 0.9
+        Recall: 0.8181818181818182
+        METRICS REPORT:               precision    recall  f1-score   support
+
+                0       0.88      0.94      0.91        16
+                1       0.90      0.82      0.86        11
+
+            accuracy                           0.89        27
+        macro avg       0.89      0.88      0.88        27
+        weighted avg       0.89      0.89      0.89        27
+    xgboost (ALL AUD):
+        1 synthetic sample:
+            NEW ACCURACY: 0.6296296296296297
+            ctx-lh-caudalanteriorcingulate    -0.842931
+            ctx-lh-isthmuscingulate            1.202048
+            ctx-lh-posteriorcingulate          0.174731
+            ctx-lh-rostralanteriorcingulate   -0.961777
+            ctx-rh-caudalanteriorcingulate    -0.678789
+            ctx-rh-isthmuscingulate           -0.092361
+            ctx-rh-posteriorcingulate         -0.620867
+            ctx-rh-rostralanteriorcingulate    1.195546
+            Name: 3, dtype: float32
+            Accuracy: 0.6296296296296297
+            Precision: 0.5555555555555556
+            Recall: 0.45454545454545453
+
+            METRICS REPORT:               precision    recall  f1-score   support
+
+           0       0.67      0.75      0.71        16
+           1       0.56      0.45      0.50        11
+
+            accuracy                           0.63        27
+            macro avg       0.61      0.60      0.60        27
+            weighted avg       0.62      0.63      0.62        27
+        2 synthetic samples:
+            NEW ACCURACY: 0.6666666666666666
+            ctx-lh-caudalanteriorcingulate    -1.276357
+            ctx-lh-isthmuscingulate            1.531684
+            ctx-lh-posteriorcingulate          0.518439
+            ctx-lh-rostralanteriorcingulate   -0.876441
+            ctx-rh-caudalanteriorcingulate    -0.844751
+            ctx-rh-isthmuscingulate            0.127524
+            ctx-rh-posteriorcingulate         -0.343465
+            ctx-rh-rostralanteriorcingulate    1.282510
+            Accuracy: 0.6666666666666666
+            Precision: 0.6
+            Recall: 0.5454545454545454
+
+            METRICS REPORT:               precision    recall  f1-score   support
+
+            0       0.71      0.75      0.73        16
+            1       0.60      0.55      0.57        11
+
+            accuracy                           0.67        27
+            macro avg       0.65      0.65      0.65        27
+            weighted avg       0.66      0.67      0.66        27
+        3 synthetic samples:
+            NEW ACCURACY: 0.7037037037037037
+            ctx-lh-caudalanteriorcingulate     0.753858
+            ctx-lh-isthmuscingulate            0.180747
+            ctx-lh-posteriorcingulate          0.576827
+            ctx-lh-rostralanteriorcingulate    1.702000
+            ctx-rh-caudalanteriorcingulate     0.390095
+            ctx-rh-isthmuscingulate            1.926066
+            ctx-rh-posteriorcingulate          1.295334
+            ctx-rh-rostralanteriorcingulate    1.011142
+            Accuracy: 0.7037037037037037
+            Precision: 0.6363636363636364
+            Recall: 0.6363636363636364
+
+            METRICS REPORT:               precision    recall  f1-score   support
+
+           0       0.75      0.75      0.75        16
+           1       0.64      0.64      0.64        11
+
+            accuracy                           0.70        27
+            macro avg       0.69      0.69      0.69        27
+            weighted avg       0.70      0.70      0.70        27
+        4 synthetic samples:
+            NEW ACCURACY: 0.7407407407407407
+            ctx-lh-caudalanteriorcingulate    -0.830657
+            ctx-lh-isthmuscingulate           -0.853676
+            ctx-lh-posteriorcingulate         -1.854041
+            ctx-lh-rostralanteriorcingulate   -2.177814
+            ctx-rh-caudalanteriorcingulate    -1.191606
+            ctx-rh-isthmuscingulate            0.719715
+            ctx-rh-posteriorcingulate          0.167532
+            ctx-rh-rostralanteriorcingulate    0.243132
+            Accuracy: 0.7407407407407407
+            Precision: 0.6666666666666666
+            Recall: 0.7272727272727273
+
+            METRICS REPORT:               precision    recall  f1-score   support
+
+           0       0.80      0.75      0.77        16
+           1       0.67      0.73      0.70        11
+
+            accuracy                           0.74        27
+            macro avg       0.73      0.74      0.73        27
+            weighted avg       0.75      0.74      0.74        27
+        5 synthetic samples:
+            NEW ACCURACY: 0.7777777777777778
+            ctx-lh-caudalanteriorcingulate    -0.010365
+            ctx-lh-isthmuscingulate            0.216840
+            ctx-lh-posteriorcingulate          0.057287
+            ctx-lh-rostralanteriorcingulate   -0.709457
+            ctx-rh-caudalanteriorcingulate    -0.425349
+            ctx-rh-isthmuscingulate           -0.904642
+            ctx-rh-posteriorcingulate         -0.139066
+            ctx-rh-rostralanteriorcingulate   -3.065701
+            Accuracy: 0.7777777777777778
+            Precision: 0.6923076923076923
+            Recall: 0.8181818181818182
+
+            METRICS REPORT:               precision    recall  f1-score   support
+
+           0       0.86      0.75      0.80        16
+           1       0.69      0.82      0.75        11
+
+            accuracy                           0.78        27
+            macro avg       0.77      0.78      0.78        27
+            weighted avg       0.79      0.78      0.78        27
+        6 synthetic samples:
+            NEW ACCURACY: 0.8148148148148148
+            ctx-lh-caudalanteriorcingulate     0.690642
+            ctx-lh-isthmuscingulate           -1.288473
+            ctx-lh-posteriorcingulate          0.416911
+            ctx-lh-rostralanteriorcingulate   -0.942613
+            ctx-rh-caudalanteriorcingulate    -0.547809
+            ctx-rh-isthmuscingulate            0.156566
+            ctx-rh-posteriorcingulate          0.692769
+            ctx-rh-rostralanteriorcingulate   -0.080380
+            Accuracy: 0.8148148148148148
+            Precision: 0.8
+            Recall: 0.7272727272727273
+            METRICS REPORT:               precision    recall  f1-score   support
+
+                    0       0.82      0.88      0.85        16
+                    1       0.80      0.73      0.76        11
+
+                accuracy                           0.81        27
+            macro avg       0.81      0.80      0.81        27
+            weighted avg       0.81      0.81      0.81        27
+
+
+    randomforest ('criterion': 'gini', 'n_estimators': 700, 'max_depth': 98, 'min_samples_split': 9):
+        1 synthetic subject:
+            NEW ACCURACY: 0.7037037037037037
+            ctx-lh-caudalanteriorcingulate     1.526767
+            ctx-lh-isthmuscingulate           -1.548164
+            ctx-lh-posteriorcingulate         -0.747060
+            ctx-lh-rostralanteriorcingulate    1.246221
+            ctx-rh-caudalanteriorcingulate     2.674116
+            ctx-rh-isthmuscingulate           -1.200290
+            ctx-rh-posteriorcingulate         -0.916623
+            ctx-rh-rostralanteriorcingulate    1.243562
+
+            Accuracy: 0.7037037037037037
+            Precision: 0.7142857142857143
+            Recall: 0.45454545454545453
+            METRICS REPORT:               precision    recall  f1-score   support
+
+                    0       0.70      0.88      0.78        16
+                    1       0.71      0.45      0.56        11
+
+                accuracy                           0.70        27
+            macro avg       0.71      0.66      0.67        27
+            weighted avg       0.71      0.70      0.69        27
+        2 synthetic subjects:
+            NEW ACCURACY: 0.7407407407407407
+            ctx-lh-caudalanteriorcingulate     0.815567
+            ctx-lh-isthmuscingulate           -0.329311
+            ctx-lh-posteriorcingulate         -1.088855
+            ctx-lh-rostralanteriorcingulate   -0.065151
+            ctx-rh-caudalanteriorcingulate    -1.019063
+            ctx-rh-isthmuscingulate            1.679703
+            ctx-rh-posteriorcingulate         -0.350047
+            ctx-rh-rostralanteriorcingulate   -1.257362 
+            Accuracy: 0.7407407407407407
+            Precision: 0.6666666666666666
+            Recall: 0.7272727272727273
+            METRICS REPORT:               precision    recall  f1-score   support
+
+                    0       0.80      0.75      0.77        16
+                    1       0.67      0.73      0.70        11
+
+                accuracy                           0.74        27
+            macro avg       0.73      0.74      0.73        27
+            weighted avg       0.75      0.74      0.74        27
+
+
+
+Model: "generator"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to
+==================================================================================================
+ z_input (InputLayer)           [(None, 4)]          0           []
+
+ class_labels (InputLayer)      [(None, 2)]          0           []
+
+ concatenate_1 (Concatenate)    (None, 6)            0           ['z_input[0][0]',
+                                                                  'class_labels[0][0]']
+
+ dense_5 (Dense)                (None, 512)          3584        ['concatenate_1[0][0]']
+
+ leaky_re_lu_3 (LeakyReLU)      (None, 512)          0           ['dense_5[0][0]']
+
+ dropout_1 (Dropout)            (None, 512)          0           ['leaky_re_lu_3[0][0]']
+
+ dense_6 (Dense)                (None, 16)           8208        ['dropout_1[0][0]']
+
+ leaky_re_lu_4 (LeakyReLU)      (None, 16)           0           ['dense_6[0][0]']
+
+ reshape (Reshape)              (None, 2, 8)         0           ['leaky_re_lu_4[0][0]']
+
+ softmax (Softmax)              (None, 2, 8)         0           ['reshape[0][0]']
+
+ lambda (Lambda)                (None, 8)            0           ['softmax[0][0]']
+
+
+Model: "discriminator"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to
+==================================================================================================
+ class_labels (InputLayer)      [(None, 2)]          0           []
+
+ discriminator_input (InputLaye  [(None, 8)]         0           []
+ r)
+
+ dense (Dense)                  (None, 4)            12          ['class_labels[0][0]']
+
+ concatenate (Concatenate)      (None, 12)           0           ['discriminator_input[0][0]',
+                                                                  'dense[0][0]']
+
+ dense_1 (Dense)                (None, 512)          6656        ['concatenate[0][0]']
+
+ leaky_re_lu (LeakyReLU)        (None, 512)          0           ['dense_1[0][0]']
+
+ dropout (Dropout)              (None, 512)          0           ['leaky_re_lu[0][0]']
+
+ dense_2 (Dense)                (None, 256)          131328      ['dropout[0][0]']
+
+ leaky_re_lu_1 (LeakyReLU)      (None, 256)          0           ['dense_2[0][0]']
+
+ dense_3 (Dense)                (None, 128)          32896       ['leaky_re_lu_1[0][0]']
+
+ leaky_re_lu_2 (LeakyReLU)      (None, 128)          0           ['dense_3[0][0]']
+
+ dense_4 (Dense)                (None, 1)            129         ['leaky_re_lu_2[0][0]']
+
+ activation (Activation)        (None, 1)            0           ['dense_4[0][0]']
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ACCURACY INCREASED, SYNTHETIC CANDIDATE ADDED
+NEW ACCURACY: 0.6296296296296297
+ctx-lh-caudalanteriorcingulate    -1.882529
+ctx-lh-isthmuscingulate            0.628518
+ctx-lh-posteriorcingulate          0.079569
+ctx-lh-rostralanteriorcingulate   -1.646095
+ctx-rh-caudalanteriorcingulate    -1.659732
+ctx-rh-isthmuscingulate            1.154043
+ctx-rh-posteriorcingulate          0.636048
+ctx-rh-rostralanteriorcingulate    0.757656
+Name: 0, dtype: float32
+Accuracy: 0.6296296296296297
+Precision: 0.5555555555555556
+Recall: 0.45454545454545453
+METRICS REPORT:               precision    recall  f1-score   support
+
+           0       0.67      0.75      0.71        16
+           1       0.56      0.45      0.50        11
+
+    accuracy                           0.63        27
+   macro avg       0.61      0.60      0.60        27
+weighted avg       0.62      0.63      0.62        27
+
+ACCURACY INCREASED, SYNTHETIC CANDIDATE ADDED
+NEW ACCURACY: 0.6666666666666666
+ctx-lh-caudalanteriorcingulate    -1.618479
+ctx-lh-isthmuscingulate            0.530772
+ctx-lh-posteriorcingulate          0.679877
+ctx-lh-rostralanteriorcingulate   -1.289167
+ctx-rh-caudalanteriorcingulate    -1.723470
+ctx-rh-isthmuscingulate            0.911075
+ctx-rh-posteriorcingulate         -1.074877
+ctx-rh-rostralanteriorcingulate   -1.337634
+Name: 2, dtype: float32
+Accuracy: 0.6666666666666666
+Precision: 0.6
+Recall: 0.5454545454545454
+METRICS REPORT:               precision    recall  f1-score   support
+
+           0       0.71      0.75      0.73        16
+           1       0.60      0.55      0.57        11
+
+    accuracy                           0.67        27
+   macro avg       0.65      0.65      0.65        27
+weighted avg       0.66      0.67      0.66        27
+
+ACCURACY INCREASED, SYNTHETIC CANDIDATE ADDED
+NEW ACCURACY: 0.7037037037037037
+ctx-lh-caudalanteriorcingulate     1.103373
+ctx-lh-isthmuscingulate           -0.184697
+ctx-lh-posteriorcingulate         -1.714886
+ctx-lh-rostralanteriorcingulate   -0.117649
+ctx-rh-caudalanteriorcingulate    -0.589127
+ctx-rh-isthmuscingulate            1.507562
+ctx-rh-posteriorcingulate         -0.962761
+ctx-rh-rostralanteriorcingulate    0.045267
+Name: 41, dtype: float32
+Accuracy: 0.7037037037037037
+Precision: 0.6363636363636364
+Recall: 0.6363636363636364
+METRICS REPORT:               precision    recall  f1-score   support
+
+           0       0.75      0.75      0.75        16
+           1       0.64      0.64      0.64        11
+
+    accuracy                           0.70        27
+   macro avg       0.69      0.69      0.69        27
+weighted avg       0.70      0.70      0.70        27
+
+4/4 [==============================] - 0s 2ms/step
+4/4 [==============================] - 0s 2ms/step
+4/4 [==============================] - 0s 2ms/step
+4/4 [==============================] - 0s 1ms/step
+4/4 [==============================] - 0s 2ms/step
+4/4 [==============================] - 0s 2ms/step
+ACCURACY INCREASED, SYNTHETIC CANDIDATE ADDED
+NEW ACCURACY: 0.7407407407407407
+ctx-lh-caudalanteriorcingulate    -0.258646
+ctx-lh-isthmuscingulate            1.442793
+ctx-lh-posteriorcingulate          0.281835
+ctx-lh-rostralanteriorcingulate   -0.298778
+ctx-rh-caudalanteriorcingulate     0.133784
+ctx-rh-isthmuscingulate           -1.401090
+ctx-rh-posteriorcingulate         -0.335251
+ctx-rh-rostralanteriorcingulate    0.847132
+Name: 60, dtype: float32
+Accuracy: 0.7407407407407407
+Precision: 0.6666666666666666
+Recall: 0.7272727272727273
+METRICS REPORT:               precision    recall  f1-score   support
+
+           0       0.80      0.75      0.77        16
+           1       0.67      0.73      0.70        11
+
+    accuracy                           0.74        27
+   macro avg       0.73      0.74      0.73        27
+weighted avg       0.75      0.74      0.74        27
