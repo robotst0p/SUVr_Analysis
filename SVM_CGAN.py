@@ -13,8 +13,6 @@ warnings.filterwarnings('ignore')
 #density plotting for generated features
 import seaborn as sb
 
- 
-
 #normalization
 from sklearn.preprocessing import StandardScaler
 
@@ -29,19 +27,14 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 import xgboost as xgb
 
- 
-
 #import LeaveOneOut for cross validation 
 from sklearn.model_selection import LeaveOneOut
-
- 
 
 #metrics importing (accuracy, precision, sensitivity, recall)
 from sklearn import metrics
 
 #parameter tuning 
 import optuna
-
 
 #tensorflow for cgan model loading
 from tensorflow.keras.models import load_model
@@ -55,6 +48,7 @@ import datetime
 #save and load variables
 import pickle
 
+#import generator model
 from lib import gan_aud as gan
 
 #load trained cgan
@@ -69,6 +63,7 @@ raw_dataframe = pd.read_excel('AUD_SUVR_wb_cingulate.xlsx', index_col = 0)
 raw_dataframe.loc[raw_dataframe["CLASS"] == "AUD", "CLASS"] = 1
 raw_dataframe.loc[raw_dataframe["CLASS"] == "CONTROL", "CLASS"] = 0
 
+#keep original raw data intact in case we want to use later
 processed_data = raw_dataframe
 
 control_frame = processed_data.loc[(processed_data['CLASS']) == 0]
@@ -76,7 +71,6 @@ aud_frame = processed_data.loc[(processed_data['CLASS']) == 1]
 
 control_frame_x = control_frame.drop(['CLASS'], axis = 1)
 aud_frame_x = aud_frame.drop(['CLASS'], axis = 1)
-
 
 X_df = processed_data.drop(['CLASS'], axis = 1)
 
@@ -91,12 +85,8 @@ y = y.astype(int)
 synth_y_container = pd.Series()
 synth_x_container = pd.DataFrame(columns = X.columns)
 
- 
-
 #z-score normalization
 scaler1 = StandardScaler()
-
- 
 
 #raw_data normalization of feature vector
 X_model = scaler1.fit(X)
@@ -107,37 +97,27 @@ X_normal = pd.DataFrame(X_model.transform(X), columns = X_df.columns)
 control_frame_normal = pd.DataFrame(control_x_model.transform(control_x), columns = X_df.columns)
 aud_frame_normal = pd.DataFrame(aud_x_model.transform(aud_x), columns = X_df.columns)
 
+#save the original dataframes for later comparison
 aud_frame_normal.to_pickle("./aud_frame_normal.pkl")
 control_frame_normal.to_pickle("./control_frame_normal.pkl")
-
 
 #leaveoneout cross validation and decisiontree model creation 
 loo = LeaveOneOut()
 loo.get_n_splits(X)
 
- 
 #store accuracies to determine which synthetic data points to add to dataset
 gan_acc_list = []
-
- 
 
 #setting initial f1 score to compare changes to 
 threshold_f1 = 0
 #track f1 change due to synthetic sample being added to training set if f1 is higher than threshold
 f1_change = 0
 
- 
-
 y_test_list = []
 filtered_test_list = []
 y_pred_list = []
 
- 
-
 synth_dict = {}
-
- 
-
 
 from optuna.integration import OptunaSearchCV
 from optuna.distributions import CategoricalDistribution, LogUniformDistribution
@@ -147,7 +127,6 @@ print("MODELS:")
 print("svm" + "\n" + "xgboost" + "\n" + "decisiontree" + "\n" + "randomforest") 
 
 model_select = input("ENTER DESIRED MODEL OF THOSE LISTED: ")
-
 
 if (model_select == "svm"):
     reset_model = svm.SVC(kernel='rbf', random_state=42)
@@ -197,7 +176,6 @@ elif (model_select == "xgboost"):
 elif (model_select == "decisiontree"):
     param_select = search_spaces_decisiontree
 
-
 optuna_search = OptunaSearchCV(
     estimator=reset_model,
     param_distributions = param_select,
@@ -206,7 +184,6 @@ optuna_search = OptunaSearchCV(
     error_score=0.0,
     refit=True,
 )
-
 
 optuna_search.fit(X_normal, y.astype(int))
 
@@ -226,7 +203,6 @@ print(best_params)
 
 current_highest_score= optuna_search.best_score_
 
- 
 succesful_cand_X=pd.DataFrame()#pd.dataframe
 succesful_cand_Y=pd.Series()
 
@@ -307,8 +283,8 @@ while synth_counter <= 27:
             #X_train_intermediate
             succesful_cand_X = succesful_cand_X.append(synth_cand_x)
             succesful_cand_Y = succesful_cand_Y.append(y_train_intermediate[-1:])
-            succesful_cand_X.to_pickle("./svm_cand_x.pkl")
-            succesful_cand_Y.to_pickle("./svm_cand_y.pkl")
+            succesful_cand_X.to_pickle("./randomforest_cand_x.pkl")
+            succesful_cand_Y.to_pickle("./randomforest_cand_y.pkl")
 
             plt.clf()
             f, ([ax1, ax2, ax3, ax4], [ax5, ax6, ax7, ax8]) = plt.subplots(nrows = 2, ncols = 4)

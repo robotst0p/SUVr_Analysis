@@ -3,74 +3,69 @@ import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sb
-from tensorflow.keras.models import load_model
 from sklearn.preprocessing import StandardScaler
+from matplotlib.lines import Line2D
+import math
+from decimal import Decimal
+from scipy.special import rel_entr
+import numpy as np
+
 
 aud_normal_x = pd.read_pickle("./aud_frame_normal.pkl")  
 control_normal_x = pd.read_pickle("./control_frame_normal.pkl")
-
-generator = load_model('C:/Users/meyer/Desktop/SUVr_Analysis/weights/wgan_CingulateSUVR_1999.h5')
-synthetic_suvr_con = gan.test_generator(generator, 0)
-synthetic_suvr_aud = gan.test_generator(generator, 1)
-
-synth_con_frame = pd.DataFrame(data = synthetic_suvr_con[0], columns = aud_normal_x.columns)
-synth_aud_frame = pd.DataFrame(data = synthetic_suvr_aud[0], columns = aud_normal_x.columns)
-
-scaler1 = StandardScaler()
-scaler2 = StandardScaler()
-
-X_model1 = scaler1.fit(synth_aud_frame)
-X_model2 = scaler2.fit(synth_con_frame)
-
-synth_aud_normal = pd.DataFrame(X_model1.transform(synth_aud_frame), columns = aud_normal_x.columns)
-synth_con_normal = pd.DataFrame(X_model2.transform(synth_con_frame), columns = aud_normal_x.columns)
-
+svm_x = pd.read_pickle("./svm_cand_x.pkl")
 
 plt.clf()
 f, ([ax1, ax2, ax3, ax4], [ax5, ax6, ax7, ax8]) = plt.subplots(nrows = 2, ncols = 4)
 
-plt.title("HDAC/SUVR regional (Cingulate) value distribution (density plot)")
+p = svm_x.iloc[:,0].tolist()
+q = aud_normal_x.iloc[:,0].tolist()
+print(p)
+print(q)
 
-sb.kdeplot(data = synth_aud_normal.iloc[:,0], ax = ax1, label = 'synthetic AUD', color = 'green')
-sb.kdeplot(data = synth_aud_normal.iloc[:,1], ax = ax2, label = 'synthetic AUD', color = 'green')
-sb.kdeplot(data = synth_aud_normal.iloc[:,2], ax = ax3, label = 'synthetic AUD', color = 'green')
-sb.kdeplot(data = synth_aud_normal.iloc[:,3], ax = ax4, label = 'synthetic AUD', color = 'green')
-sb.kdeplot(data =synth_aud_normal.iloc[:,4], ax = ax5, label = 'synthetic AUD', color = 'green')
-sb.kdeplot(data =synth_aud_normal.iloc[:,5], ax = ax6, label = 'synthetic AUD', color = 'green')
-sb.kdeplot(data =synth_aud_normal.iloc[:,6], ax = ax7, label = 'synthetic AUD', color = 'green')
-sb.kdeplot(data =synth_aud_normal.iloc[:,7], ax = ax8, label = 'synthetic AUD', color = 'green')
+p = [0, 6, 0, .4]
+q = [.1818, .4545, .0909, .2726]
 
-sb.kdeplot(data = aud_normal_x.iloc[:, 0], ax = ax1, label = 'aud_original', color = 'red')
-sb.kdeplot(data = aud_normal_x.iloc[:, 1], ax = ax2, label = 'aud_original', color = 'red')
-sb.kdeplot(data = aud_normal_x.iloc[:, 2], ax = ax3, label = 'aud_original', color = 'red')
-sb.kdeplot(data = aud_normal_x.iloc[:, 3], ax = ax4, label = 'aud_original', color = 'red')
-sb.kdeplot(data = aud_normal_x.iloc[:, 4], ax = ax5, label = 'aud_original', color = 'red')
-sb.kdeplot(data = aud_normal_x.iloc[:, 5], ax = ax6, label = 'aud_original', color = 'red')
-sb.kdeplot(data = aud_normal_x.iloc[:, 6], ax = ax7, label = 'aud_original', color = 'red')
-sb.kdeplot(data = aud_normal_x.iloc[:, 7], ax = ax8, label = 'aud_original', color = 'red')
+print(p)
+print(q)
 
-sb.kdeplot(data = control_normal_x.iloc[:, 0], ax = ax1, label = 'control_original', color = 'yellow')
-sb.kdeplot(data = control_normal_x.iloc[:, 1], ax = ax2, label = 'control_original', color = 'yellow')
-sb.kdeplot(data = control_normal_x.iloc[:, 2], ax = ax3, label = 'control_original', color = 'yellow')
-sb.kdeplot(data = control_normal_x.iloc[:, 3], ax = ax4, label = 'control_original', color = 'yellow')
-sb.kdeplot(data = control_normal_x.iloc[:, 4], ax = ax5, label = 'control_original', color = 'yellow')
-sb.kdeplot(data = control_normal_x.iloc[:, 5], ax = ax6, label = 'control_original', color = 'yellow')
-sb.kdeplot(data = control_normal_x.iloc[:, 6], ax = ax7, label = 'control_original', color = 'yellow')
-sb.kdeplot(data = control_normal_x.iloc[:, 7], ax = ax8, label = 'control_original', color = 'yellow')
+kl_pq = sum(rel_entr(q, p))
+print(kl_pq)
 
-sb.kdeplot(data = synth_con_normal.iloc[:, 0], ax = ax1, label = 'synthetic CONTROL', color = 'purple')
-sb.kdeplot(data = synth_con_normal.iloc[:, 1], ax = ax2, label = 'synthetic CONTROL', color = 'purple')
-sb.kdeplot(data = synth_con_normal.iloc[:, 2], ax = ax3, label = 'synthetic CONTROL', color = 'purple')
-sb.kdeplot(data = synth_con_normal.iloc[:, 3], ax = ax4, label = 'synthetic CONTROL', color = 'purple')
-sb.kdeplot(data = synth_con_normal.iloc[:, 4], ax = ax5, label = 'synthetic CONTROL', color = 'purple')
-sb.kdeplot(data = synth_con_normal.iloc[:, 5], ax = ax6, label = 'synthetic CONTROL', color = 'purple')
-sb.kdeplot(data = synth_con_normal.iloc[:, 6], ax = ax7, label = 'synthetic CONTROL', color = 'purple')
-sb.kdeplot(data = synth_con_normal.iloc[:, 7], ax = ax8, label = 'synthetic CONTROL', color = 'purple')
+#plt.title("HDAC/SUVR regional (Cingulate) value distribution (density plot)")
 
-plt.draw()
-plt.legend()
-plt.show()
-plt.clf()
+#sb.kdeplot(data = svm_x.iloc[:,0], ax = ax1, label = 'synthetic AUD', color = 'orange')
+#sb.kdeplot(data = svm_x.iloc[:,1], ax = ax2, label = 'synthetic AUD', color = 'orange')
+#sb.kdeplot(data = svm_x.iloc[:,2], ax = ax3, label = 'synthetic AUD', color = 'orange')
+#sb.kdeplot(data = svm_x.iloc[:,3], ax = ax4, label = 'synthetic AUD', color = 'orange')
+#sb.kdeplot(data =svm_x.iloc[:,4], ax = ax5, label = 'synthetic AUD', color = 'orange')
+#sb.kdeplot(data =svm_x.iloc[:,5], ax = ax6, label = 'synthetic AUD', color = 'orange')
+#sb.kdeplot(data =svm_x.iloc[:,6], ax = ax7, label = 'synthetic AUD', color = 'orange')
+#sb.kdeplot(data =svm_x.iloc[:,7], ax = ax8, label = 'synthetic AUD', color = 'orange')
+
+
+#sb.kdeplot(data = aud_normal_x.iloc[:, 0], ax = ax1, label = 'aud_original', color = 'red')
+#sb.kdeplot(data = aud_normal_x.iloc[:, 1], ax = ax2, label = 'aud_original', color = 'red')
+#sb.kdeplot(data = aud_normal_x.iloc[:, 2], ax = ax3, label = 'aud_original', color = 'red')
+#sb.kdeplot(data = aud_normal_x.iloc[:, 3], ax = ax4, label = 'aud_original', color = 'red')
+#sb.kdeplot(data = aud_normal_x.iloc[:, 4], ax = ax5, label = 'aud_original', color = 'red')
+#sb.kdeplot(data = aud_normal_x.iloc[:, 5], ax = ax6, label = 'aud_original', color = 'red')
+#sb.kdeplot(data = aud_normal_x.iloc[:, 6], ax = ax7, label = 'aud_original', color = 'red')
+#sb.kdeplot(data = aud_normal_x.iloc[:, 7], ax = ax8, label = 'aud_original', color = 'red')
+
+#sb.kdeplot(data = control_normal_x.iloc[:, 0], ax = ax1, label = 'control_original', color = 'blue')
+#sb.kdeplot(data = control_normal_x.iloc[:, 1], ax = ax2, label = 'control_original', color = 'blue')
+#sb.kdeplot(data = control_normal_x.iloc[:, 2], ax = ax3, label = 'control_original', color = 'blue')
+#sb.kdeplot(data = control_normal_x.iloc[:, 3], ax = ax4, label = 'control_original', color = 'blue')
+#sb.kdeplot(data = control_normal_x.iloc[:, 4], ax = ax5, label = 'control_original', color = 'blue')
+#sb.kdeplot(data = control_normal_x.iloc[:, 5], ax = ax6, label = 'control_original', color = 'blue')
+#sb.kdeplot(data = control_normal_x.iloc[:, 6], ax = ax7, label = 'control_original', color = 'blue')
+#sb.kdeplot(data = control_normal_x.iloc[:, 7], ax = ax8, label = 'control_original', color = 'blue')
+
+#plt.draw()
+#plt.legend()
+#plt.show()
+#plt.clf()
 
 #needs to be done:
 #change plot color scheme
