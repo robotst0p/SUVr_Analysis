@@ -81,9 +81,6 @@ plt.show()
 #clear plot for individual 8 region graphs
 plt.clf()
 
-#define list of shapes to use to differentiate points of differing KL types on the scatter plot for each of the brain regions
-shape_list = ['.','o','v','+','x','D','_','*']
-
 #need different data frame for each region 
 #take the matching indexes from each frame and combine the rows into one frame: this will give us one frame for each of the 8 brain regions
 

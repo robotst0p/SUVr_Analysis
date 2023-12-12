@@ -39,6 +39,7 @@ synth_frame_x_29999 = pd.DataFrame(data = synthetic_suvr_29999[0], columns = aud
 synth_control_x_1999 = pd.DataFrame(data = synthetic_control_1999[0], columns = aud_normal_x.columns)
 synth_control_x_29999 = pd.DataFrame(data = synthetic_control_29999[0], columns = aud_normal_x.columns)
 
+#function to normalize a passed in frame
 def normalize_frame(frame):
     scaler2 = StandardScaler()
 
@@ -47,10 +48,9 @@ def normalize_frame(frame):
 
     return synth_frame_normal
 
-#generate 100 sets of samples and controls, put them into one dataframe then average them out for each brain region
+#generate 100 sets of synthetic samples, average them, add them to one frame until desired count is reached, then normalize and analyze
 #normalize them at the end 
 def add_samples(old_frame, type, iteration, new_frame = pd.DataFrame()):
-
     if iteration == 1999:
         generator = load_model('C:/Users/meyer/Desktop/SUVr_Analysis/weights/wgan_CingulateSUVR_1999.h5')
     else:
@@ -58,88 +58,55 @@ def add_samples(old_frame, type, iteration, new_frame = pd.DataFrame()):
 
     #generate control data
     if type == 0:
-        synth = gan.test_generator(generator, type, 16)
+        synth = gan.test_generator(generator, type, 100)
+    #generate subject data
     else:
-        synth = gan.test_generator(generator, type, 11)
-
+        synth = gan.test_generator(generator, type, 100)
 
     #place generated data in a dataframe
     new_frame = pd.DataFrame(data = synth[0], columns = old_frame.columns)
+    concat_frame = pd.DataFrame(columns = synth_control_x_29999.columns)
+
+    #calculate the mean of the 100 generated samples for each region and place it as a new sample in cocant frame
+    for column in new_frame.columns:
+        concat_frame.loc[0, column] = new_frame.loc[:, column].mean()
+
     #concatenate new generated data to old frame passed into function
-    frame_list = [old_frame, new_frame]
+    frame_list = [old_frame, concat_frame]
     final_frame = pd.concat(frame_list)
 
     return final_frame
 
-for i in range(0, 100):
-    synth_frame_x_1999 = add_samples(synth_frame_x_1999, 1, 1999)
-    synth_frame_x_29999 = add_samples(synth_frame_x_29999, 1, 29999)
-    
-    synth_control_x_1999 = add_samples(synth_control_x_1999, 0, 1999)
-    synth_control_x_29999 = add_samples(synth_control_x_29999, 0, 29999)
-
-# synth_frame_x_1999 = normalize_frame(synth_frame_x_1999)
-# synth_frame_x_29999 = normalize_frame(synth_frame_x_29999)
-
-# synth_control_x_1999 = normalize_frame(synth_control_x_1999)
-# synth_control_x_29999 = normalize_frame(synth_control_x_29999)
-
-print(synth_frame_x_1999)
-
-#average out new frames 
-    
-#df.loc[:, 'weight'].mean()
+#empty dataframes to put the average samples into with the same columns as the original dataframes
 average_synth_1999 = pd.DataFrame(columns = synth_frame_x_1999.columns)
 average_synth_29999 = pd.DataFrame(columns = synth_frame_x_1999.columns)
 average_control_1999 = pd.DataFrame(columns = synth_frame_x_1999.columns)
 average_control_29999 = pd.DataFrame(columns = synth_frame_x_1999.columns)
 
-for column in synth_frame_x_1999.columns:
-    print(synth_frame_x_1999.loc[:, column].mean())
-    average_synth_1999.loc[0, column] = synth_frame_x_1999.loc[:, column].mean()
-    average_synth_29999.loc[0, column] = synth_frame_x_29999.loc[:, column].mean()
-    average_control_1999.loc[0, column] = synth_control_x_1999.loc[:, column].mean()
-    average_control_29999.loc[0, column] = synth_control_x_29999.loc[:, column].mean()
+#for synthetic subjects, generate 1100 and average every 100 for a total of 11 synthetic subjects
+for i in range(0, 11):
+    average_synth_1999 = add_samples(average_synth_1999, 1, 1999)
+    average_synth_29999 = add_samples(average_synth_29999, 1, 29999)
 
-# average_synth_1999 = normalize_frame(average_synth_1999)
-# average_synth_29999 = normalize_frame(average_synth_29999)
+#for synthetic controls, generate 1600 and average every 100 for a total of 16 synthetic subjects
+for i in range(0, 16):
+    average_control_1999 = add_samples(average_control_1999, 0, 1999)
+    average_control_29999 = add_samples(average_control_29999, 0, 29999)
 
-# average_control_1999 = normalize_frame(average_control_1999)
-# average_control_29999 = normalize_frame(average_control_29999)
+#fix indexes after concatenation
+average_synth_1999.reset_index()
+average_synth_29999.reset_index()
+average_control_1999.reset_index()
+average_control_29999.reset_index()
 
-print(average_synth_29999)
-#normalize data before pickling it
-# synth_frame_x_1999 = pd.DataFrame(data = synthetic_suvr_1999[0], columns = aud_normal_x.columns)
-# synth_control_x_1999 = pd.DataFrame(data = synthetic_control_1999[0], columns = aud_normal_x.columns)
-# synth_frame_x_29999 = pd.DataFrame(data = synthetic_suvr_29999[0], columns = aud_normal_x.columns)
-# synth_control_x_29999 = pd.DataFrame(data = synthetic_control_29999[0], columns = aud_normal_x.columns)
+#normalize the data in the average frames
+average_synth_1999 = normalize_frame(average_synth_1999)
+average_synth_29999 = normalize_frame(average_synth_29999)
+average_control_1999 = normalize_frame(average_control_1999)
+average_control_29999 = normalize_frame(average_control_29999)
 
-# #z-score normalization
-# scaler2 = StandardScaler()
-
-# #raw_data normalization of feature vector
-
-# synth_suvr_model_1999 = scaler2.fit(synth_frame_x_1999)
-# synth_suvr_model_29999 = scaler2.fit(synth_frame_x_29999)
-
-# synth_control_model_1999 = scaler2.fit(synth_control_x_1999)
-# synth_control_model_29999 = scaler2.fit(synth_control_x_29999)
-
-# synth_suvr_normal_1999 = pd.DataFrame(synth_suvr_model_1999.transform(synth_frame_x_1999), columns = aud_normal_x.columns)
-# synth_suvr_normal_29999 = pd.DataFrame(synth_suvr_model_29999.transform(synth_frame_x_29999), columns = aud_normal_x.columns)
-
-# synth_control_model_1999 = scaler2.fit(synth_control_x_1999)
-# synth_control_model_29999 = scaler2.fit(synth_control_x_29999)
-
-# synth_control_normal_1999 = pd.DataFrame(synth_control_model_1999.transform(synth_control_x_1999), columns = aud_normal_x.columns)
-# synth_control_normal_29999 = pd.DataFrame(synth_control_model_29999.transform(synth_control_x_29999), columns = aud_normal_x.columns)
-
-#divergence_frame.to_pickle("./divergence_frame.pkl")
-#save generated and normalized data frames for later analysis
-#synth_suvr_normal_1999.to_pickle("./gen_suvr_1999")
-#synth_suvr_normal_29999.to_pickle("./gen_suvr_29999")
-#synth_control_normal_1999.to_pickle("./gen_control_1999")
-#synth_control_normal_29999.to_pickle("./gen_control_29999")
-
-#generate 100 sets of samples and controls, put them into one dataframe then average them out for each brain region
-#normalize them at the end 
+#pickle the frames for divergence and plotting analysis
+average_synth_1999.to_pickle("./average_synth_1999.pkl")
+average_synth_29999.to_pickle("./average_synth_29999.pkl")
+average_control_1999.to_pickle("./average_control_1999.pkl")
+average_control_29999.to_pickle("./average_control_29999.pkl")

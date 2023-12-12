@@ -15,11 +15,11 @@ import matplotlib.pyplot as plt
 aud_normal_x = pd.read_pickle("./aud_frame_normal.pkl")  
 control_normal_x = pd.read_pickle("./control_frame_normal.pkl")
 
-synth_suvr_x_1999 = pd.read_pickle("./gen_suvr_1999")
-synth_suvr_x_29999 = pd.read_pickle("./gen_suvr_29999")
+synth_suvr_x_1999 = pd.read_pickle("./average_synth_1999.pkl")
+synth_suvr_x_29999 = pd.read_pickle("./average_synth_29999.pkl")
 
-synth_control_x_1999 = pd.read_pickle("./gen_control_1999")
-synth_control_x_29999 = pd.read_pickle("./gen_control_29999")
+synth_control_x_1999 = pd.read_pickle("./average_control_1999.pkl")
+synth_control_x_29999 = pd.read_pickle("./average_control_29999.pkl")
 
 pq_list = []
 qp_list = []
@@ -61,10 +61,10 @@ axis_list.append(ax7)
 axis_list.append(ax8)
 
 for i in range(0, len(axis_list)):
-    sb.kdeplot(data = synth_control_x_1999.iloc[:,i].tolist(), ax = axis_list[i], label = 'synthetic CONTROL', color = 'cyan')
+    sb.kdeplot(data = synth_control_x_29999.iloc[:,i].tolist(), ax = axis_list[i], label = 'synthetic CONTROL', color = 'cyan')
 
 for i in range(0, len(axis_list)):
-    sb.kdeplot(data = synth_suvr_x_1999.iloc[:,i].tolist(), ax = axis_list[i], label = 'synthetic AUD', color = 'orange')
+    sb.kdeplot(data = synth_suvr_x_29999.iloc[:,i].tolist(), ax = axis_list[i], label = 'synthetic AUD', color = 'orange')
 
 for i in range(0, len(axis_list)):
     sb.kdeplot(data = aud_normal_x.iloc[:,i].tolist(), ax = axis_list[i], label = 'aud_original', color = 'red')
@@ -97,9 +97,9 @@ for k in range(0, len(axis_list)):
 print(divergence_frame)
 plt.clf()
 
-divergence_frame.to_pickle("./divergence_frame_1999.pkl")
+divergence_frame.to_pickle("./divergence_frame_29999.pkl")
 
-divergence_frame.to_csv("./divergence_frame_1999.csv")
+divergence_frame.to_csv("./divergence_frame_29999.csv")
 
 
 
