@@ -8,11 +8,14 @@ import numpy as np
 
 from matplotlib import markers
 
-#start with plot of 1999 iterations
+#violin plot
 
 #load dataframe of kl divergence values 
 divergence_frame_1999 = pd.read_pickle("./divergence_frame_1999.pkl")
 divergence_frame_29999 = pd.read_pickle("./divergence_frame_29999.pkl")  
+
+print(divergence_frame_1999)
+print(divergence_frame_29999)
 
 #adjust index names to names of brain regions
 
@@ -102,8 +105,8 @@ def create_region_frame(plot_frame1, plot_frame2, region, new_frame = pd.DataFra
     return final_frame
 
 #region_list = ['ctx_lh_caudalanteriorcingulate','ctx_lh_isthmuscingulate','ctx_lh_posteriorcingulate','ctx_lh_rostralanteriorcingulate','ctx_rh_caudalanteriorcingulate','ctx_rh_isthmuscingulate','ctx_rh_posteriorcingulate','ctx_rh_rostralanteriorcingulate']
-print(plot_frame_1999)
-print(plot_frame_29999)
+# print(plot_frame_1999)
+# print(plot_frame_29999)
 
 lh_caudalanterior = create_region_frame(plot_frame_1999, plot_frame_29999, 'ctx_lh_caudalanteriorcingulate')
 lh_isthmus = create_region_frame(plot_frame_1999, plot_frame_29999, 'ctx_lh_isthmuscingulate')
@@ -113,7 +116,6 @@ rh_caudalanterior = create_region_frame(plot_frame_1999, plot_frame_29999, 'ctx_
 rh_isthmus = create_region_frame(plot_frame_1999, plot_frame_29999, 'ctx_rh_isthmuscingulate')
 rh_posterior = create_region_frame(plot_frame_1999, plot_frame_29999, 'ctx_rh_posteriorcingulate')
 rh_rostralanterior = create_region_frame(plot_frame_1999, plot_frame_29999, 'ctx_rh_rostralanteriorcingulate')
-print(rh_rostralanterior)
 
 #create scatter plots for kl divergences values split by regions and specified by type and generator iteration number
 f, ([ax1, ax2, ax3, ax4], [ax5, ax6, ax7, ax8]) = plt.subplots(nrows = 2, ncols = 4)
