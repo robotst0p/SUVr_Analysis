@@ -113,6 +113,7 @@ def to_float(plot_frame):
 
     return plot_frame
 
+
 for frame in brain_frames:
     frame = to_float(frame)
 
@@ -128,73 +129,169 @@ sns.violinplot(
     x="KL Type",
     y="Divergence",
     hue="KL Type",
-    palette="Set2",
-    ax=ax1
+    palette={
+        "synthaud_originalaud": "orange",
+        "synthaud_originalcontrol": "red",
+        "synthcontrol_originalcontrol": "blue",
+        "synthcontrol_originalaud": "cyan"
+    },
+    order=[
+        "synthaud_originalaud",
+        "synthaud_originalcontrol",
+        " ",
+        "synthcontrol_originalcontrol",
+        "synthcontrol_originalaud"
+    ],
+    ax=ax1,
 ).set(title="LH Caudalanterior Cingulate", xticklabels=[], xlabel=None)
-#ax1.legend(bbox_to_anchor=(-0.74, 1), loc="upper left", borderaxespad=0, fontsize=7.6)
-
+# ax1.legend(bbox_to_anchor=(-0.74, 1), loc="upper left", borderaxespad=0, fontsize=7.6)
 sns.violinplot(
     data=lh_isthmus,
     x="KL Type",
     y="Divergence",
     hue="KL Type",
-    palette="Set2",
+    palette={
+        "synthaud_originalaud": "orange",
+        "synthaud_originalcontrol": "red",
+        "synthcontrol_originalcontrol": "blue",
+        "synthcontrol_originalaud": "cyan"
+    },
+    order=[
+        "synthaud_originalaud",
+        "synthaud_originalcontrol",
+        " ",
+        "synthcontrol_originalcontrol",
+        "synthcontrol_originalaud"
+    ],
     ax=ax2,
-    legend=False
+    legend=False,
 ).set(title="LH Isthmus Cingulate", xticklabels=[], xlabel=None)
 sns.violinplot(
     data=lh_posterior,
     x="KL Type",
     y="Divergence",
     hue="KL Type",
-    palette="Set2",
+    palette={
+        "synthaud_originalaud": "orange",
+        "synthaud_originalcontrol": "red",
+        "synthcontrol_originalcontrol": "blue",
+        "synthcontrol_originalaud": "cyan"
+    },
+    order=[
+        "synthaud_originalaud",
+        "synthaud_originalcontrol",
+        " ",
+        "synthcontrol_originalcontrol",
+        "synthcontrol_originalaud"
+    ],
     ax=ax3,
-    legend=False
+    legend=False,
 ).set(title="LH Posterior Cingulate", xticklabels=[], xlabel=None)
 sns.violinplot(
     data=lh_rostralanterior,
     x="KL Type",
     y="Divergence",
     hue="KL Type",
-    palette="Set2",
+    palette={
+        "synthaud_originalaud": "orange",
+        "synthaud_originalcontrol": "red",
+        "synthcontrol_originalcontrol": "blue",
+        "synthcontrol_originalaud": "cyan"
+    },
+    order=[
+        "synthaud_originalaud",
+        "synthaud_originalcontrol",
+        " ",
+        "synthcontrol_originalcontrol",
+        "synthcontrol_originalaud"
+    ],
     ax=ax4,
-    legend=False
+    legend=False,
 ).set(title="LH Rostralanterior Cingulate", xticklabels=[], xlabel=None)
 sns.violinplot(
     data=rh_caudalanterior,
     x="KL Type",
     y="Divergence",
     hue="KL Type",
-    palette="Set2",
+    palette={
+        "synthaud_originalaud": "orange",
+        "synthaud_originalcontrol": "red",
+        "synthcontrol_originalcontrol": "blue",
+        "synthcontrol_originalaud": "cyan"
+    },
+    order=[
+        "synthaud_originalaud",
+        "synthaud_originalcontrol",
+        " ",
+        "synthcontrol_originalcontrol",
+        "synthcontrol_originalaud"
+    ],
     ax=ax5,
-    legend=False
+    legend=False,
 ).set(title="RH Caudalanterior Cingulate", xticklabels=[], xlabel=None)
 sns.violinplot(
     data=rh_isthmus,
     x="KL Type",
     y="Divergence",
     hue="KL Type",
-    palette="Set2",
+    palette={
+        "synthaud_originalaud": "orange",
+        "synthaud_originalcontrol": "red",
+        "synthcontrol_originalcontrol": "blue",
+        "synthcontrol_originalaud": "cyan"
+    },
+    order=[
+        "synthaud_originalaud",
+        "synthaud_originalcontrol",
+        " ",
+        "synthcontrol_originalcontrol",
+        "synthcontrol_originalaud"
+    ],
     ax=ax6,
-    legend=False
+    legend=False,
 ).set(title="RH Isthmus Cingulate", xticklabels=[], xlabel=None)
 sns.violinplot(
     data=rh_posterior,
     x="KL Type",
     y="Divergence",
     hue="KL Type",
-    palette="Set2",
+    palette={
+        "synthaud_originalaud": "orange",
+        "synthaud_originalcontrol": "red",
+        "synthcontrol_originalcontrol": "blue",
+        "synthcontrol_originalaud": "cyan"
+    },
+    order=[
+        "synthaud_originalaud",
+        "synthaud_originalcontrol",
+        " ",
+        "synthcontrol_originalcontrol",
+        "synthcontrol_originalaud"
+    ],
     ax=ax7,
-    legend=False
+    legend=False,
 ).set(title="RH Posterior Cingulate", xticklabels=[], xlabel=None)
 sns.violinplot(
     data=rh_rostralanterior,
     x="KL Type",
     y="Divergence",
     hue="KL Type",
-    palette="Set2",
+    width = 1,
+    palette={
+        "synthaud_originalaud": "orange",
+        "synthaud_originalcontrol": "red",
+        "synthcontrol_originalcontrol": "blue",
+        "synthcontrol_originalaud": "cyan"
+    },
+    order=[
+        "synthaud_originalaud",
+        "synthaud_originalcontrol",
+        " ",
+        "synthcontrol_originalcontrol",
+        "synthcontrol_originalaud"
+    ],
     ax=ax8,
-    legend=False
+    legend=False,
 ).set(title="RH Rostralanterior Cingulate", xticklabels=[], xlabel=None)
 
 plt.show()
