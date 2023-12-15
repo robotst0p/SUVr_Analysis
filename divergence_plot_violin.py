@@ -142,9 +142,10 @@ sns.violinplot(
         "synthcontrol_originalcontrol",
         "synthcontrol_originalaud"
     ],
+    legend = True,
     ax=ax1,
 ).set(title="LH Caudalanterior Cingulate", xticklabels=[], xlabel=None)
-# ax1.legend(bbox_to_anchor=(-0.74, 1), loc="upper left", borderaxespad=0, fontsize=7.6)
+ax1.legend(bbox_to_anchor=(-0.74, 1.2), loc="upper left", borderaxespad=0, fontsize=7.6)
 sns.violinplot(
     data=lh_isthmus,
     x="KL Type",
@@ -166,6 +167,7 @@ sns.violinplot(
     ax=ax2,
     legend=False,
 ).set(title="LH Isthmus Cingulate", xticklabels=[], xlabel=None)
+ax2.set_ylabel(None)
 sns.violinplot(
     data=lh_posterior,
     x="KL Type",
@@ -187,6 +189,7 @@ sns.violinplot(
     ax=ax3,
     legend=False,
 ).set(title="LH Posterior Cingulate", xticklabels=[], xlabel=None)
+ax3.set_ylabel(None)
 sns.violinplot(
     data=lh_rostralanterior,
     x="KL Type",
@@ -208,6 +211,7 @@ sns.violinplot(
     ax=ax4,
     legend=False,
 ).set(title="LH Rostralanterior Cingulate", xticklabels=[], xlabel=None)
+ax4.set_ylabel(None)
 sns.violinplot(
     data=rh_caudalanterior,
     x="KL Type",
@@ -250,6 +254,7 @@ sns.violinplot(
     ax=ax6,
     legend=False,
 ).set(title="RH Isthmus Cingulate", xticklabels=[], xlabel=None)
+ax6.set_ylabel(None)
 sns.violinplot(
     data=rh_posterior,
     x="KL Type",
@@ -271,6 +276,7 @@ sns.violinplot(
     ax=ax7,
     legend=False,
 ).set(title="RH Posterior Cingulate", xticklabels=[], xlabel=None)
+ax7.set_ylabel(None)
 sns.violinplot(
     data=rh_rostralanterior,
     x="KL Type",
@@ -293,6 +299,7 @@ sns.violinplot(
     ax=ax8,
     legend=False,
 ).set(title="RH Rostralanterior Cingulate", xticklabels=[], xlabel=None)
+ax8.set_ylabel(None)
 
 plt.show()
 
