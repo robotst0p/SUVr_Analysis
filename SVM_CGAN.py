@@ -7,6 +7,9 @@ import seaborn as sn
 import random
 import time
 
+#function for normalizing data using z score
+from generate_data import normalize_frame
+
 # disable pandas warnings for deprecated methods
 import warnings
 
@@ -300,173 +303,11 @@ while synth_counter <= 27:
             current_highest_score = score
             # X_train_intermediate
             succesful_cand_X = succesful_cand_X.append(synth_cand_x)
+            print(succesful_cand_X)
             succesful_cand_Y = succesful_cand_Y.append(y_train_intermediate[-1:])
-            succesful_cand_X.to_pickle("./randomforest_cand_x.pkl")
-            succesful_cand_Y.to_pickle("./randomforest_cand_y.pkl")
+            succesful_cand_X.to_pickle("./svm_cand_x.pkl")
+            succesful_cand_Y.to_pickle("./svm_cand_y.pkl")
 
-            plt.clf()
-            f, ([ax1, ax2, ax3, ax4], [ax5, ax6, ax7, ax8]) = plt.subplots(
-                nrows=2, ncols=4
-            )
-
-            plt.title(
-                "HDAC/SUVR regional (Cingulate) value distribution (density plot)"
-            )
-
-            sb.kdeplot(
-                data=succesful_cand_X.iloc[:, 0],
-                ax=ax1,
-                label="synthetic AUD",
-                color="orange",
-            )
-            sb.kdeplot(
-                data=succesful_cand_X.iloc[:, 1],
-                ax=ax2,
-                label="synthetic AUD",
-                color="orange",
-            )
-            sb.kdeplot(
-                data=succesful_cand_X.iloc[:, 2],
-                ax=ax3,
-                label="synthetic AUD",
-                color="orange",
-            )
-            sb.kdeplot(
-                data=succesful_cand_X.iloc[:, 3],
-                ax=ax4,
-                label="synthetic AUD",
-                color="orange",
-            )
-            sb.kdeplot(
-                data=succesful_cand_X.iloc[:, 4],
-                ax=ax5,
-                label="synthetic AUD",
-                color="orange",
-            )
-            sb.kdeplot(
-                data=succesful_cand_X.iloc[:, 5],
-                ax=ax6,
-                label="synthetic AUD",
-                color="orange",
-            )
-            sb.kdeplot(
-                data=succesful_cand_X.iloc[:, 6],
-                ax=ax7,
-                label="synthetic AUD",
-                color="orange",
-            )
-            sb.kdeplot(
-                data=succesful_cand_X.iloc[:, 7],
-                ax=ax8,
-                label="synthetic AUD",
-                color="orange",
-            )
-
-            sb.kdeplot(
-                data=aud_frame_normal.iloc[:, 0],
-                ax=ax1,
-                label="aud_original",
-                color="red",
-            )
-            sb.kdeplot(
-                data=aud_frame_normal.iloc[:, 1],
-                ax=ax2,
-                label="aud_original",
-                color="red",
-            )
-            sb.kdeplot(
-                data=aud_frame_normal.iloc[:, 2],
-                ax=ax3,
-                label="aud_original",
-                color="red",
-            )
-            sb.kdeplot(
-                data=aud_frame_normal.iloc[:, 3],
-                ax=ax4,
-                label="aud_original",
-                color="red",
-            )
-            sb.kdeplot(
-                data=aud_frame_normal.iloc[:, 4],
-                ax=ax5,
-                label="aud_original",
-                color="red",
-            )
-            sb.kdeplot(
-                data=aud_frame_normal.iloc[:, 5],
-                ax=ax6,
-                label="aud_original",
-                color="red",
-            )
-            sb.kdeplot(
-                data=aud_frame_normal.iloc[:, 6],
-                ax=ax7,
-                label="aud_original",
-                color="red",
-            )
-            sb.kdeplot(
-                data=aud_frame_normal.iloc[:, 7],
-                ax=ax8,
-                label="aud_original",
-                color="red",
-            )
-
-            sb.kdeplot(
-                data=control_frame_normal.iloc[:, 0],
-                ax=ax1,
-                label="control_original",
-                color="blue",
-            )
-            sb.kdeplot(
-                data=control_frame_normal.iloc[:, 1],
-                ax=ax2,
-                label="control_original",
-                color="blue",
-            )
-            sb.kdeplot(
-                data=control_frame_normal.iloc[:, 2],
-                ax=ax3,
-                label="control_original",
-                color="blue",
-            )
-            sb.kdeplot(
-                data=control_frame_normal.iloc[:, 3],
-                ax=ax4,
-                label="control_original",
-                color="blue",
-            )
-            sb.kdeplot(
-                data=control_frame_normal.iloc[:, 4],
-                ax=ax5,
-                label="control_original",
-                color="blue",
-            )
-            sb.kdeplot(
-                data=control_frame_normal.iloc[:, 5],
-                ax=ax6,
-                label="control_original",
-                color="blue",
-            )
-            sb.kdeplot(
-                data=control_frame_normal.iloc[:, 6],
-                ax=ax7,
-                label="control_original",
-                color="blue",
-            )
-            sb.kdeplot(
-                data=control_frame_normal.iloc[:, 7],
-                ax=ax8,
-                label="control_original",
-                color="blue",
-            )
-
-            plt.draw()
-            plt.legend()
-            plt.show()
-            plt.clf()
-            # plt.clf()
-            # sb.kdeplot(data=X_normal.iloc[:, 1])
-            # sb.kdeplot(data=succesful_cand_X.iloc[:,1])
             print("ACCURACY INCREASED, SYNTHETIC CANDIDATE ADDED")
             print("NEW ACCURACY: " + str(score))
             print(synth_cand_x)
