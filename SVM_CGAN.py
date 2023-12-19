@@ -7,9 +7,6 @@ import seaborn as sn
 import random
 import time
 
-#function for normalizing data using z score
-from generate_data import normalize_frame
-
 # disable pandas warnings for deprecated methods
 import warnings
 
@@ -59,7 +56,7 @@ from lib import gan_aud as gan
 
 # load trained cgan
 generator = load_model(
-    "C:/Users/meyer/Desktop/SUVr_Analysis/weights/wgan_CingulateSUVR_29999.h5"
+    "C:/Users/meyer/Desktop/SUVr_Analysis/weights/wgan_CingulateSUVR_1999.h5"
 )
 synthetic_suvr = gan.test_generator(generator)
 
@@ -94,22 +91,25 @@ synth_y_container = pd.Series()
 synth_x_container = pd.DataFrame(columns=X.columns)
 
 # z-score normalization
-scaler1 = StandardScaler()
+# scaler1 = StandardScaler()
+# # raw_data normalization of feature vector
+# X_model = scaler1.fit(X)
+# control_x_model = scaler1.fit(control_x)
+# aud_x_model = scaler1.fit(aud_x)
 
-# raw_data normalization of feature vector
-X_model = scaler1.fit(X)
-control_x_model = scaler1.fit(control_x)
-aud_x_model = scaler1.fit(aud_x)
+# X_normal = pd.DataFrame(X_model.transform(X), columns=X_df.columns)
+# control_frame_normal = pd.DataFrame(
+#     control_x_model.transform(control_x), columns=X_df.columns
+# )
+# aud_frame_normal = pd.DataFrame(aud_x_model.transform(aud_x), columns=X_df.columns)
 
-X_normal = pd.DataFrame(X_model.transform(X), columns=X_df.columns)
-control_frame_normal = pd.DataFrame(
-    control_x_model.transform(control_x), columns=X_df.columns
-)
-aud_frame_normal = pd.DataFrame(aud_x_model.transform(aud_x), columns=X_df.columns)
+X_normal = X
+control_frame_normal = control_x
+aud_frame_normal = aud_x
 
 # save the original dataframes for later comparison
-aud_frame_normal.to_pickle("./aud_frame_normal.pkl")
-control_frame_normal.to_pickle("./control_frame_normal.pkl")
+# aud_frame_normal.to_pickle("./aud_frame_normal.pkl")
+# control_frame_normal.to_pickle("./control_frame_normal.pkl")
 
 # leaveoneout cross validation and decisiontree model creation
 loo = LeaveOneOut()
@@ -237,16 +237,16 @@ while synth_counter <= 27:
     synth_frame_y = pd.Series(synthetic_suvr[1])
 
     # z-score normalization
-    scaler2 = StandardScaler()
+    # scaler2 = StandardScaler()
 
-    # raw_data normalization of feature vector
+    # # raw_data normalization of feature vector
 
-    X_model2 = scaler2.fit(synth_frame_x)
-    synth_X_normal = pd.DataFrame(
-        X_model2.transform(synth_frame_x), columns=X_df.columns
-    )
+    # X_model2 = scaler2.fit(synth_frame_x)
+    # synth_X_normal = pd.DataFrame(
+    #     X_model2.transform(synth_frame_x), columns=X_df.columns
+    #)
     # {'criterion': 'entropy', 'n_estimators': 500, 'max_depth': 24, 'min_samples_split': 4}.
-    for row in list(synth_X_normal.index.values):
+    for row in list(synth_frame_x.index.values):
         y_pred_list = []
         y_test_list = []
         svc = reset_model
@@ -259,7 +259,7 @@ while synth_counter <= 27:
             # y_test_list.append(y_test)
 
             # append synthetic point to X_training set
-            synth_cand_x = synth_X_normal.loc[row]
+            synth_cand_x = synth_frame_x.loc[row]
 
             X_train_intermediate = X_train.append(
                 synth_cand_x, ignore_index=True
@@ -271,6 +271,7 @@ while synth_counter <= 27:
             y_train_intermediate = y_train.copy()
 
             y_train_intermediate.at[len(y_train) + 1] = synth_train_y
+            # print(y_train_intermediate)
 
             # y_train=y_train.rename({27: row})
 
@@ -282,6 +283,21 @@ while synth_counter <= 27:
             X_train_intermediate = X_train_intermediate.append(succesful_cand_X)
             y_train_intermediate = y_train_intermediate.append(succesful_cand_Y)
 
+            #normalize synthetic + original training data
+            scaler2 = StandardScaler()
+
+            X_model2 = scaler2.fit(X_train_intermediate)
+            X_train_intermediate = pd.DataFrame(
+                X_model2.transform(X_train_intermediate), columns=X_df.columns)
+
+            #normalize test data using same model created for training
+            X_test = pd.DataFrame(
+                X_model2.transform(X_test), columns=X_df.columns)
+            
+            # print(X_test)
+            
+            # print(X_train_intermediate)
+            # print(synth_frame_x)
             svc.fit(X_train_intermediate, y_train_intermediate)
 
             y_pred = svc.predict(X_test)
@@ -303,7 +319,7 @@ while synth_counter <= 27:
             current_highest_score = score
             # X_train_intermediate
             succesful_cand_X = succesful_cand_X.append(synth_cand_x)
-            print(succesful_cand_X)
+            
             succesful_cand_Y = succesful_cand_Y.append(y_train_intermediate[-1:])
             succesful_cand_X.to_pickle("./svm_cand_x.pkl")
             succesful_cand_Y.to_pickle("./svm_cand_y.pkl")
@@ -324,7 +340,6 @@ while synth_counter <= 27:
             time.sleep(1)
 
             synth_counter += 1
-
 # version notes
 # removed extra library imports
 # removed leftover synthetic data preprocessing
