@@ -301,8 +301,8 @@ while synth_counter <= 27:
             # X_train_intermediate
             succesful_cand_X = succesful_cand_X.append(synth_cand_x)
             succesful_cand_Y = succesful_cand_Y.append(y_train_intermediate[-1:])
-            succesful_cand_X.to_pickle("./randomforest_cand_x.pkl")
-            succesful_cand_Y.to_pickle("./randomforest_cand_y.pkl")
+            succesful_cand_X.to_pickle("./svm_cand_x.pkl")
+            succesful_cand_Y.to_pickle("./svm_cand_y.pkl")
 
             plt.clf()
             f, ([ax1, ax2, ax3, ax4], [ax5, ax6, ax7, ax8]) = plt.subplots(
