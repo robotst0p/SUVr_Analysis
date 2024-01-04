@@ -1,7 +1,7 @@
 import pandas as pd
 import pickle
 from tensorflow.keras.models import load_model
-from lib import gan_aud as gan
+from lib import gan_architecture as gan
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 import pickle
@@ -24,7 +24,7 @@ def normalize_frame(frame):
 
 
 # load original dataframe as reference
-aud_normal_x = pd.read_pickle("./aud_frame_normal.pkl")
+aud_normal_x = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/aud_frame_normal.pkl")
 
 # generator trained for 1999 iterations
 generator_1999 = load_model(
@@ -69,11 +69,11 @@ synth_frame_x_29999 = normalize_frame(synth_frame_x_29999)
 synth_control_x_1999 = normalize_frame(synth_control_x_1999)
 synth_control_x_29999 = normalize_frame(synth_control_x_29999)
 
-synth_frame_x_1999.to_pickle("./gen_suvr_1999.pkl")
-synth_frame_x_29999.to_pickle("./gen_suvr_29999.pkl")
+synth_frame_x_1999.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/gen_suvr_1999.pkl")
+synth_frame_x_29999.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/gen_suvr_29999.pkl")
 
-synth_control_x_1999.to_pickle("./gen_control_1999.pkl")
-synth_control_x_29999.to_pickle("./gen_control_29999.pkl")
+synth_control_x_1999.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/gen_control_1999.pkl")
+synth_control_x_29999.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/gen_control_29999.pkl")
 
 # generate 100 sets of synthetic samples, average them, add them to one frame until desired count is reached, then normalize and analyze
 # normalize them at the end
@@ -136,7 +136,7 @@ average_control_1999 = normalize_frame(average_control_1999)
 average_control_29999 = normalize_frame(average_control_29999)
 
 # pickle the frames for divergence and plotting analysis
-average_synth_1999.to_pickle("./average_synth_1999.pkl")
-average_synth_29999.to_pickle("./average_synth_29999.pkl")
-average_control_1999.to_pickle("./average_control_1999.pkl")
-average_control_29999.to_pickle("./average_control_29999.pkl")
+average_synth_1999.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/average_synth_1999.pkl")
+average_synth_29999.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/average_synth_29999.pkl")
+average_control_1999.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/average_control_1999.pkl")
+average_control_29999.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/average_control_29999.pkl")
