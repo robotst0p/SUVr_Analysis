@@ -9,7 +9,7 @@ from matplotlib import markers
 
 # load in whole divergence frame of 800 rows
 # frame is 800 rows by 4 columns
-divergence_frame = pd.read_pickle("./whole_divergence_frame.pkl")
+divergence_frame = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/whole_divergence_frame.pkl")
 
 # adjust dataframe for region column with list of regions
 region_list = [
@@ -117,7 +117,6 @@ def to_float(plot_frame):
 for frame in brain_frames:
     frame = to_float(frame)
 
-print(rh_rostralanterior.dtypes)
 # create violin plots for divergence values by region, grouped by kl type
 f, ([ax1, ax2, ax3, ax4], [ax5, ax6, ax7, ax8]) = plt.subplots(nrows=2, ncols=4)
 plt.title("KL Divergence Values Across Cingulate Regions")

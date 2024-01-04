@@ -52,7 +52,7 @@ import datetime
 import pickle
 
 # import generator model
-from lib import gan_aud as gan
+from lib import gan_architecture as gan
 
 # load trained cgan
 generator = load_model(
@@ -90,18 +90,18 @@ y = y.astype(int)
 synth_y_container = pd.Series()
 synth_x_container = pd.DataFrame(columns=X.columns)
 
-# z-score normalization
-# scaler1 = StandardScaler()
-# # raw_data normalization of feature vector
-# X_model = scaler1.fit(X)
-# control_x_model = scaler1.fit(control_x)
-# aud_x_model = scaler1.fit(aud_x)
 
-# X_normal = pd.DataFrame(X_model.transform(X), columns=X_df.columns)
-# control_frame_normal = pd.DataFrame(
-#     control_x_model.transform(control_x), columns=X_df.columns
-# )
-# aud_frame_normal = pd.DataFrame(aud_x_model.transform(aud_x), columns=X_df.columns)
+scaler1 = StandardScaler()
+# raw_data normalization of feature vector
+X_model = scaler1.fit(X)
+control_x_model = scaler1.fit(control_x)
+aud_x_model = scaler1.fit(aud_x)
+
+X_normal = pd.DataFrame(X_model.transform(X), columns=X_df.columns)
+control_frame_normal = pd.DataFrame(
+    control_x_model.transform(control_x), columns=X_df.columns
+)
+aud_frame_normal = pd.DataFrame(aud_x_model.transform(aud_x), columns=X_df.columns)
 
 X_normal = X
 control_frame_normal = control_x
@@ -236,15 +236,14 @@ while synth_counter <= 27:
     synth_frame_x = pd.DataFrame(data=synthetic_suvr[0], columns=X_df.columns)
     synth_frame_y = pd.Series(synthetic_suvr[1])
 
-    # z-score normalization
-    # scaler2 = StandardScaler()
+    scaler2 = StandardScaler()
 
-    # # raw_data normalization of feature vector
+    # raw_data normalization of feature vector
 
-    # X_model2 = scaler2.fit(synth_frame_x)
-    # synth_X_normal = pd.DataFrame(
-    #     X_model2.transform(synth_frame_x), columns=X_df.columns
-    #)
+    X_model2 = scaler2.fit(synth_frame_x)
+    synth_X_normal = pd.DataFrame(
+        X_model2.transform(synth_frame_x), columns=X_df.columns
+    )
     # {'criterion': 'entropy', 'n_estimators': 500, 'max_depth': 24, 'min_samples_split': 4}.
     for row in list(synth_frame_x.index.values):
         y_pred_list = []
@@ -321,8 +320,8 @@ while synth_counter <= 27:
             succesful_cand_X = succesful_cand_X.append(synth_cand_x)
             
             succesful_cand_Y = succesful_cand_Y.append(y_train_intermediate[-1:])
-            succesful_cand_X.to_pickle("./svm_cand_x.pkl")
-            succesful_cand_Y.to_pickle("./svm_cand_y.pkl")
+            succesful_cand_X.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/svm_cand_x.pkl")
+            succesful_cand_Y.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/svm_cand_y.pkl")
 
             print("ACCURACY INCREASED, SYNTHETIC CANDIDATE ADDED")
             print("NEW ACCURACY: " + str(score))

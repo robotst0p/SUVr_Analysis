@@ -1,7 +1,7 @@
 import pandas as pd
 import pickle
 from tensorflow.keras.models import load_model
-from lib import gan_aud as gan
+from lib import gan_architecture as gan
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 import pickle
@@ -24,7 +24,7 @@ def normalize_frame(frame):
 
 
 # load original dataframe as reference
-aud_normal_x = pd.read_pickle("./aud_frame_normal.pkl")
+aud_normal_x = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/original_data/aud_frame_normal.pkl")
 
 # generate 100 sets of synthetic samples, average them, add them to one frame until desired count is reached, then normalize and analyze
 # normalize them at the end

@@ -1,0 +1,28 @@
+1. open violin_data script
+    1. script generates 16000 control samples and 11000 aud samples using add_samples function
+    2. script places all generated control samples into "whole_control" dataframe
+    3. script places all generated aud samples into "whole_uad" dataframe
+    4. script uses "normalize_frame" function to normalize the data in each frame 
+    5. script saves normalized frames of 11000 aud and 16000 control samples to pickle for divergence calculation
+
+2. open kl_divergence script
+    1. loads whole frame generated and pickled by violin_data script into "whole_suvr" and "whole_control" dataframes
+    2. creates "divergence_frame" dataframe with columns specifying the types of kl divergence we want (like synthaud to originalaud divergence)
+    3. need to average over every 100 sets of samples (1100 aud, 1600 control)
+        1. selects 100 sets of 16 generated control samples and 11 generated aud samples
+        2. places them in plot_frame_aud and plot_frame_control dataframes
+        3. plots kde distribution for those 100 sets of samples (1100 aud samples and 1600 control samples total)
+        4. directly calculate the relative entropy between kde distribtions for each type of sample to get kl divergence value
+        5. add kl divergence value for that set to "divergence_frame" dataframe (essentially averaging the divergence for the chosen samples)
+        6. divergence_frame is saved to pickle for violin plotting
+
+3. open divergence_plot_violin script
+    1. data is in wide format, need to change to long format for plotting
+    2. kl divergence values are loaded from pickle file to "divergence_frame" dataframe
+    3. in divergence_frame, "KL Type" column is populated with the divergence type for each divergence value in the frame
+    4. in divergence_frame, "Region" column is populated with the brain region name each divergence value was calculated for 
+    5. in divergence_frame, "Divergence" column is populated with the divergence values loaded in corresponding to each kl type and brain region
+    6. all of this is collected into "plot_frame" for plotting
+    7. region specific dataframes are created containing only divergence values for those brain regions
+    8. divergence values are plotted with violin plot
+    9. each region has 100 divergence values to plot (16000 control and 11000 aud generated, 1 "set" of samples contains 11 aud and 16 control, 100 sets are selected for each region to calculate divergence -> 100 kl values per region)

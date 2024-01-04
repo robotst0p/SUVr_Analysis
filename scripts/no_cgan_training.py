@@ -39,7 +39,7 @@ from sklearnex import patch_sklearn
 patch_sklearn()
 
 #load in suvr data as pandas dataframe
-raw_dataframe = pd.read_excel('AUD_SUVR_wb_cingulate.xlsx', index_col = 0)
+raw_dataframe = pd.read_excel('C:/Users/meyer/Desktop/SUVr_Analysis/original_data/AUD_SUVR_wb_cingulate.xlsx', index_col = 0)
 
 #map subject labels to numerical values 
 raw_dataframe.loc[raw_dataframe["CLASS"] == "AUD", "CLASS"] = 1

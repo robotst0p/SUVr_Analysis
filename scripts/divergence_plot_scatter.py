@@ -10,8 +10,8 @@ from matplotlib import markers
 # violin plot
 
 # load dataframe of kl divergence values
-divergence_frame_1999 = pd.read_pickle("./divergence_frame_1999.pkl")
-divergence_frame_29999 = pd.read_pickle("./divergence_frame_29999.pkl")
+divergence_frame_1999 = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/divergence_frame_1999.pkl")
+divergence_frame_29999 = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/divergence_frame_29999.pkl")
 
 print(divergence_frame_1999)
 print(divergence_frame_29999)
