@@ -44,26 +44,6 @@ def generator(inputs,labels,
     # Returns
         Model: Generator Model
     """
-    # # default input is just 500-dim noise (z-code)
-    # x = inputs
-
-    # x = Dense(1024)(x)
-    # x = LeakyReLU(0.2)(x)
-    # x = Dropout(0.4)(x)
-    # x = Dense(2*n_of_genes)(x)
-    # x = LeakyReLU(0.2)(x)
-    # x = Reshape((2,n_of_genes))(x)
-
-    # if activation is not None:
-    #     if activation == 'softmax':
-    #         x = Softmax(axis=1)(x)
-    #     else:
-    #         x = Activation(activation)(x)
-
-    # x = Lambda(lambda x: x[:,1])(x)
-
-    # # generator output is the synthesized somatic mutation profile x
-    # return Model(inputs, x, name='generator')
     
     ##################################### cGAN #################################
     
@@ -87,42 +67,54 @@ def generator(inputs,labels,
     # generator output is the synthesized somatic mutation profile x
     return  Model([inputs, labels], x, name='generator')
 
-
+#create generator model for gan in more tensorthonic way 
+def make_generator_model(inputs, labels, n_of_suvr, activation = 'sigmoid'):
+    model = tf.keras.Sequential()
+    model.add(layers.Dense(512))
+    model.add(layers.LeakyReLU(0.2))
+    model.add(layers.Dropout(0.4))
+    model.add(layers.Dense(2*n_of_suvr))
+    model.add(layers.LeakyReLU(0.2))
+    model.add(layers.Reshape(2,n_of_suvr))
+    
+    #activation seems always to bee softmax, can change the last layer if 
+    #we want to change the final activation layer
+    
+    model.add(layers.Softmax(axis = 1))
+    
+    #final lambda layer
+    model.add(layers.Lambda(lambda x: x[:,1]))
+    
+    return model
+    
+#create the discriminator model in more tensorthonic way
+def make_discriminator_model(inputs, labels, n_of_suvr, activation = 'sigmoid'):
+    #do the concatenation of x and y before passing the values to the discriminator 
+    #these functions should only be used for the actual architecture and construction of the 
+    #individual models/networks themselves
+    
+    model = tf.keras.Sequential()
+    model.add(layers.Dense(512))
+    model.add(layers.LeakyReLU(0.2))
+    model.add(layers.Dropout(0.4))
+    model.add(layers.Dense(256))
+    model.add(layers.LeakyReLU(0.2))
+    model.add(layers.Dense(128))
+    model.add(layers.LeakyReLU(0.2))
+    
+    #add final output layer and then activation function
+    model.add(layers.Dense(1))
+    
+    #pretty sure the activation function for the last layer will always be sigmoid
+    #can change the final activation layer if it is not 
+    model.add(layers.Activation('sigmoid'))
+    
+    return model
 
 
 def discriminator(inputs,labels,
                   n_of_suvr,
                   activation='sigmoid'):
-    """
-    Discriminator Model
-
-    Stack of LeakyReLU-MLP to discriminate real from fake
-
-    # Arguments
-        inputs (Layer): Input layer of the discriminator (the image)
-        activation (string): Name of output activation layer
-
-    # Returns
-        Model: Discriminator Model
-    """
-    # x = inputs
-    # x = Dense(1024)(x)
-    # x = LeakyReLU(0.2)(x)
-    # x = Dropout(0.4)(x)
-    # x = Dense(512)(x)
-    # x = LeakyReLU(0.2)(x)
-    # x = Dense(256)(x)
-    # x = LeakyReLU(0.2)(x)
-
-    # outputs = Dense(1)(x)
-    
-    # if activation is not None:
-    #     print(activation)
-    #     outputs = Activation(activation)(outputs)
-
-    # return Model(inputs, outputs, name='discriminator')
-    
-    ##################################### cGAN #################################
     
     x = inputs
     
