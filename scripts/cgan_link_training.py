@@ -38,6 +38,8 @@ from sklearn import metrics
 
 # parameter tuning
 import optuna
+from optuna.integration import OptunaSearchCV
+from optuna.distributions import CategoricalDistribution, LogUniformDistribution
 
 # tensorflow for cgan model loading
 from tensorflow.keras.models import load_model
@@ -62,7 +64,7 @@ synthetic_suvr = gan.test_generator(generator)
 
 
 # load in suvr data or only cingulate data as pandas dataframe
-raw_dataframe = pd.read_excel("AUD_SUVR_wb_cingulate.xlsx", index_col=0)
+raw_dataframe = pd.read_excel("C:/Users/meyer/Desktop/SUVr_Analysis/original_data/AUD_SUVR_wb_cingulate.xlsx", index_col=0)
 
 # map subject labels to numerical values
 raw_dataframe.loc[raw_dataframe["CLASS"] == "AUD", "CLASS"] = 1
@@ -103,9 +105,9 @@ control_frame_normal = pd.DataFrame(
 )
 aud_frame_normal = pd.DataFrame(aud_x_model.transform(aud_x), columns=X_df.columns)
 
-X_normal = X
-control_frame_normal = control_x
-aud_frame_normal = aud_x
+# X_normal = X
+# control_frame_normal = control_x
+# aud_frame_normal = aud_x
 
 # save the original dataframes for later comparison
 # aud_frame_normal.to_pickle("./aud_frame_normal.pkl")
@@ -115,22 +117,8 @@ aud_frame_normal = aud_x
 loo = LeaveOneOut()
 loo.get_n_splits(X)
 
-# store accuracies to determine which synthetic data points to add to dataset
-gan_acc_list = []
-
-# setting initial f1 score to compare changes to
-threshold_f1 = 0
-# track f1 change due to synthetic sample being added to training set if f1 is higher than threshold
-f1_change = 0
-
 y_test_list = []
-filtered_test_list = []
 y_pred_list = []
-
-synth_dict = {}
-
-from optuna.integration import OptunaSearchCV
-from optuna.distributions import CategoricalDistribution, LogUniformDistribution
 
 # prompt user to enter desired model type
 print("MODELS:")
@@ -223,12 +211,6 @@ current_highest_score = optuna_search.best_score_
 succesful_cand_X = pd.DataFrame()  # pd.dataframe
 succesful_cand_Y = pd.Series()
 
-# cgan connector notes:
-# use optuna before loop to fit best parameters for svm --> keep the same
-# use while loop with subject number threshold conditional on outside
-# take all preproccessing for synthetic data sets and place inside the loop
-# need to generate synth data, put into dataframe, normalize, then loop throw rows
-
 synth_counter = 0
 
 while synth_counter <= 27:
@@ -238,14 +220,13 @@ while synth_counter <= 27:
 
     scaler2 = StandardScaler()
 
-    # raw_data normalization of feature vector
-
+    #normalization of synthetic data
     X_model2 = scaler2.fit(synth_frame_x)
     synth_X_normal = pd.DataFrame(
         X_model2.transform(synth_frame_x), columns=X_df.columns
     )
-    # {'criterion': 'entropy', 'n_estimators': 500, 'max_depth': 24, 'min_samples_split': 4}.
-    for row in list(synth_frame_x.index.values):
+
+    for row in list(synth_X_normal.index.values):
         y_pred_list = []
         y_test_list = []
         svc = reset_model
@@ -258,7 +239,7 @@ while synth_counter <= 27:
             # y_test_list.append(y_test)
 
             # append synthetic point to X_training set
-            synth_cand_x = synth_frame_x.loc[row]
+            synth_cand_x = synth_X_normal.loc[row]
 
             X_train_intermediate = X_train.append(
                 synth_cand_x, ignore_index=True
@@ -270,33 +251,14 @@ while synth_counter <= 27:
             y_train_intermediate = y_train.copy()
 
             y_train_intermediate.at[len(y_train) + 1] = synth_train_y
-            # print(y_train_intermediate)
-
-            # y_train=y_train.rename({27: row})
 
             y_train_intermediate = y_train_intermediate.rename(
                 {len(y_train_intermediate): row}
             )
-            #####################################################
-            ############### change after decision
+
             X_train_intermediate = X_train_intermediate.append(succesful_cand_X)
             y_train_intermediate = y_train_intermediate.append(succesful_cand_Y)
 
-            #normalize synthetic + original training data
-            scaler2 = StandardScaler()
-
-            X_model2 = scaler2.fit(X_train_intermediate)
-            X_train_intermediate = pd.DataFrame(
-                X_model2.transform(X_train_intermediate), columns=X_df.columns)
-
-            #normalize test data using same model created for training
-            X_test = pd.DataFrame(
-                X_model2.transform(X_test), columns=X_df.columns)
-            
-            # print(X_test)
-            
-            # print(X_train_intermediate)
-            # print(synth_frame_x)
             svc.fit(X_train_intermediate, y_train_intermediate)
 
             y_pred = svc.predict(X_test)
@@ -306,11 +268,8 @@ while synth_counter <= 27:
 
         y_pred_final = pd.Series(y_pred_list)
 
-        # print("YPRED: ")
-        # print(y_pred_list)
         del svc
 
-        # score = metrics.f1_score(y, y_pred_final)
         score = metrics.accuracy_score(y, y_pred_final)
 
         # find highest f1 score to compare new f1 score to
@@ -320,8 +279,8 @@ while synth_counter <= 27:
             succesful_cand_X = succesful_cand_X.append(synth_cand_x)
             
             succesful_cand_Y = succesful_cand_Y.append(y_train_intermediate[-1:])
-            succesful_cand_X.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/svm_cand_x.pkl")
-            succesful_cand_Y.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/svm_cand_y.pkl")
+            succesful_cand_X.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/randomforest_cand_x.pkl")
+            succesful_cand_Y.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/randomforest_cand_y.pkl")
 
             print("ACCURACY INCREASED, SYNTHETIC CANDIDATE ADDED")
             print("NEW ACCURACY: " + str(score))
@@ -339,6 +298,4 @@ while synth_counter <= 27:
             time.sleep(1)
 
             synth_counter += 1
-# version notes
-# removed extra library imports
-# removed leftover synthetic data preprocessing
+

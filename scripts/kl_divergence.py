@@ -25,8 +25,8 @@ average_control_29999 = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/sav
 average_synth_1999 = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/average_synth_1999.pkl")
 average_synth_29999 = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/average_synth_29999.pkl")
 
-whole_aud = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/whole_aud_frame.pkl")
-whole_control = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/whole_control_frame.pkl")
+whole_aud = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/whole_suvr_frame_29999.pkl")
+whole_control = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/whole_control_frame_29999.pkl")
 
 pq_list = []
 qp_list = []
@@ -161,7 +161,7 @@ for i in range(0, 100):
     plt.clf()
     plt.close()
 
-divergence_frame.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/whole_divergence_frame.pkl")
+divergence_frame.to_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/whole_divergence_frame_29999.pkl")
 
 # f, ([ax1, ax2, ax3, ax4], [ax5, ax6, ax7, ax8]) = plt.subplots(nrows = 2, ncols = 4)
 # plt.title("HDAC/SUVR regional (Cingulate) value distribution (density plot)")
