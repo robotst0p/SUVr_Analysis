@@ -15,7 +15,10 @@ import matplotlib.pyplot as plt
 aud_normal_x = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/aud_frame_normal.pkl")
 control_normal_x = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/control_frame_normal.pkl")
 
-svm_cands = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/svm_cand_x.pkl")
+success_cands = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/randomforest_cand_x.pkl")
+success_cands_y = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/randomforest_cand_y.pkl")
+
+print(success_cands_y)
 
 pq_list = []
 qp_list = []
@@ -81,9 +84,10 @@ axis_list.append(ax5)
 axis_list.append(ax6)
 axis_list.append(ax7)
 axis_list.append(ax8)
+
 for i in range(0, len(axis_list)):
     sb.kdeplot(
-        data=svm_cands.iloc[:, i].tolist(),
+        data=success_cands.iloc[:, i].tolist(),
         ax=axis_list[i],
         label="synthetic AUD",
         color="orange",
@@ -133,5 +137,5 @@ print(divergence_frame)
 plt.clf()
 plt.close()
 
-divergence_frame.to_pickle("./succesful_divergence_frame.pkl")
-divergence_frame.to_csv("./succesful_divergence_frame.csv")
+divergence_frame.to_pickle("./succesful_divergence_frame_randomforest.pkl")
+divergence_frame.to_csv("./succesful_divergence_frame_randomforest.csv")

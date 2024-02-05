@@ -127,6 +127,7 @@ def train(models, data, params):
 
     # get rid of hidden "(ds.store)" file
     # if there are weight files already present in the directory, remove the following line
+    generator_list.pop(0)
 
     # checks to see if there are any currently saved weights to load for training continuation
     if generator_list == []:
@@ -163,7 +164,7 @@ def train(models, data, params):
     # writer_a = tf.summary.create_file_writer("./logs/logs_a")
 
     writer = tf.summary.create_file_writer(
-        "/Users/tyler/Desktop/SUVr_Analysis/SUVr_Analysis/logs/log_cingulate_batch3_latent4_lr-5e-5"
+        "C:/Users/meyer/Desktop/SUVr_Analysis/logs/log_cingulate_batch3_latent4_lr-5e-5"
     )
 
     # network parameters
@@ -180,6 +181,8 @@ def train(models, data, params):
     real_labels = np.ones((batch_size, 1))
 
     for i in range(start_range, train_steps):
+        #fix memory leak issue by clearing old layers and keeping memory consumption constant over time 
+        tf.keras.backend.clear_session()
         # train discriminator n_critic times
         loss = 0
         acc = 0
@@ -271,7 +274,6 @@ def wasserstein_loss(y_label, y_pred):
     """
     return -K.mean(y_label * y_pred)
 
-
 def build_and_train_models():
     # load MNIST dataset
     # (x_train, _), (_, _) = mnist.load_data()
@@ -281,7 +283,7 @@ def build_and_train_models():
     # raw_dataframe = pd.read_excel('AUD_SUVr_WB.xlsx') #,index_col = 0
     # raw_dataframe = pd.read_excel('AUD_SUVR_wb_cingulate.xlsx') #,index_col = 0
     raw_dataframe = pd.read_excel(
-        "/Users/tyler/Desktop/SUVr_Analysis/SUVr_Analysis/original_data/AUD_SUVR_wb_cingulate.xlsx"
+        "C:/Users/meyer/Desktop/SUVr_Analysis/original_data/AUD_SUVR_wb_cingulate.xlsx"
     )  # ,index_col = 0
 
     raw_dataframe.loc[raw_dataframe["CLASS"] == "AUD", "CLASS"] = 1
@@ -297,13 +299,13 @@ def build_and_train_models():
     model_name = "wgan_CingulateSUVR"
     # network parameters
     # the latent or z vector is 500-dim
-    latent_size = 4  # 500
+    latent_size = 500  # 500
     # hyper parameters
     n_critic = 5
     clip_value = 0.01
-    batch_size = 27  # 64
+    batch_size = 10  # 64
     lr = 5e-5
-    train_steps = 30000
+    train_steps = 500000
 
     n_samples = x_train.shape[1]  #
     input_shape = (n_samples,)  # input shape 1x100
