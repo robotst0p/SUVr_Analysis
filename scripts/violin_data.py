@@ -31,11 +31,11 @@ aud_normal_x = pd.read_pickle("C:/Users/meyer/Desktop/SUVr_Analysis/saved_data/a
 def add_samples(old_frame, type, iteration, new_frame=pd.DataFrame()):
     if iteration == 1999:
         generator = load_model(
-            "C:/Users/meyer/Desktop/SUVr_Analysis/weights/wgan_CingulateSUVR_1999.h5"
+            "C:/Users/meyer/Desktop/SUVr_Analysis/scripts/weights/generator/wgan_CingulateSUVR_1999.h5"
         )
     else:
         generator = load_model(
-            "C:/Users/meyer/Desktop/SUVr_Analysis/weights/wgan_CingulateSUVR_29999.h5"
+            "C:/Users/meyer/Desktop/SUVr_Analysis/scripts/weights/generator/wgan_CingulateSUVR_499999.h5"
         )
 
     # generate control data
@@ -62,13 +62,13 @@ whole_suvr = pd.DataFrame(columns=aud_normal_x.columns)
 whole_control = pd.DataFrame(columns=aud_normal_x.columns)
 
 for i in range(0, 1000):
-    whole_suvr = add_samples(whole_suvr, 1, 1999)
+    whole_suvr = add_samples(whole_suvr, 1, 29999)
 
 for i in range(0, 1000):
-    whole_control = add_samples(whole_control, 0, 1999)
+    whole_control = add_samples(whole_control, 0, 29999)
 
 whole_suvr = normalize_frame(whole_suvr)
 whole_control = normalize_frame(whole_control)
 
-whole_suvr.to_pickle("./whole_suvr_frame_1999.pkl")
-whole_control.to_pickle("./whole_control_frame_1999.pkl")
+whole_suvr.to_pickle("./whole_suvr_frame_29999.pkl")
+whole_control.to_pickle("./whole_control_frame_29999.pkl")

@@ -151,7 +151,7 @@ def discriminator(inputs,labels,
 
 def test_generator(generator, class_label=None, num_samples = 11):
     n_sample = num_samples
-    noise_input = np.random.uniform(-1.0, 1.0, size=[n_sample, 4]) # 4 is latent size
+    noise_input = np.random.uniform(-1.0, 1.0, size=[n_sample, 500]) # 4 is latent size
     
     if class_label is None:
         num_labels = 2

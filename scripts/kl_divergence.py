@@ -131,7 +131,7 @@ for i in range(0, 100):
 
     plt.draw()
     plt.legend()
-    # plt.show()
+    #plt.show()
 
     # synth control: curve 0
     # synthetic aud: curve 1

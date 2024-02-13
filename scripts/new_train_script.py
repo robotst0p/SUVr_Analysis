@@ -182,7 +182,7 @@ def train(models, data, params):
 
     for i in range(start_range, train_steps):
         #fix memory leak issue by clearing old layers and keeping memory consumption constant over time 
-        tf.keras.backend.clear_session()
+    
         # train discriminator n_critic times
         loss = 0
         acc = 0
@@ -259,9 +259,21 @@ def train(models, data, params):
             with open("./epoch.pickle", "wb") as f:
                 pickle.dump(i, f)
 
-            generator.save("weights/generator/" + model_name + "_" + str(i) + ".h5")
-            discriminator.save("weights/discriminator/" + "descrim" + str(i) + ".h5")
-            adversarial.save("weights/adversarial/" + "adversarial" + str(i) + ".h5")
+            generator_path = "weights/generator/" + model_name + "_" + str(i) + ".h5"
+            discrim_path = "weights/discriminator" + "descrim" + str(i) + ".h5"
+            adversarial_path = "weights/adversarial/" + "adversarial" + str(i) + ".h5"
+
+            generator.save(generator_path)
+            discriminator.save(discrim_path)
+            adversarial.save(adversarial_path)
+
+            #fix memory leak by clearing old graph nodes and keeping memory consumption steady overtime
+            tf.keras.backend.clear_session()
+
+            #reload the models after clearing the session
+            generator = load_model(generator_path, custom_objects={"wasserstein_loss": wasserstein_loss})
+            descriminator = load_model(discrim_path, custom_objects={"wasserstein_loss": wasserstein_loss})
+            adversarial = load_model(adversarial_path, custom_objects={"wasserstein_loss": wasserstein_loss})
 
     # save the model after training the generator
     # the trained generator can be reloaded for future MNIST digit generation
